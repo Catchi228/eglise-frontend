@@ -1,0 +1,85 @@
+@config "../../tailwind.config.ts";
+@import "tailwindcss";
+
+:root,
+html {
+  scroll-padding-top: calc(4.5rem + env(safe-area-inset-top, 0px));
+}
+
+html {
+  color-scheme: light;
+  overflow-x: clip;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+
+/* Titres de page : échelle fluide mobile → desktop */
+.page-title {
+  font-size: clamp(1.5rem, 4vw + 0.75rem, 1.875rem);
+  line-height: 1.2;
+}
+
+/* Listes / grilles défilantes horizontales (sommaire mobile, admin) */
+.scroll-touch-x {
+  -webkit-overflow-scrolling: touch;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+:root {
+  --background: #f5f0e8;
+  --foreground: #0f172a;
+  --muted: #64748b;
+  --surface: rgba(255, 255, 255, 0.92);
+  --surface-2: #f4f0ea;
+  --border: rgba(15, 23, 42, 0.08);
+  --primary: #1e3a5f;
+  --primary-hover: #152a45;
+  --primary-soft: rgba(30, 58, 95, 0.08);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono);
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes heroKen {
+  0%,
+  100% {
+    transform: scale(1.06);
+  }
+  50% {
+    transform: scale(1.14);
+  }
+}
+
+body {
+  overflow-x: clip;
+  /* Laisse le fond global (AppShell) apparaître */
+  background: transparent;
+  color: var(--foreground);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system,
+    Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
