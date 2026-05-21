@@ -30,7 +30,11 @@
    | `BIBLE_LOCAL_ONLY` | Recommandé | `1` si la Bible est incluse dans le build |
    | `ALLOWED_ORIGINS` | Optionnel | Domaines autorisés pour POST (ex. `https://www.example.org`) |
 
-4. Déployer (`git push` ou bouton Deploy).
+   > Sans `DATABASE_URL` et `SESSION_SECRET`, l'inscription et la connexion échouent.
+
+4. **Redéployer** après avoir ajouté les variables (Deployments → … → Redeploy).
+
+5. Vérifier : ouvrir `https://votre-site.vercel.app/api/health` — doit afficher `{"ok":true,"db":true,"session":true}`.
 
 ## 3. Uploads (important)
 

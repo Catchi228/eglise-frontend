@@ -1,4 +1,5 @@
 import { assertSameOrigin, securityErrorResponse } from "@/lib/apiSecurity";
+import { authRouteError } from "@/lib/authRouteError";
 import {
   createSession,
   createUser,
@@ -32,20 +33,24 @@ export async function POST(req: Request) {
     );
   }
 
-  const existing = await findUserByEmail(email);
-  if (existing) {
-    return Response.json({ error: "Compte déjà existant" }, { status: 409 });
+  try {
+    const existing = await findUserByEmail(email);
+    if (existing) {
+      return Response.json({ error: "Compte déjà existant" }, { status: 409 });
+    }
+
+    const user = await createUser(email, password, "USER");
+    const sid = await createSession(user.id);
+    await setSessionCookie(sid, user.role);
+
+    return Response.json({
+      user: {
+        email: user.email,
+        role: user.role,
+        isPrincipal: Boolean(user.is_principal),
+      },
+    });
+  } catch (e) {
+    return authRouteError(e);
   }
-
-  const user = await createUser(email, password, "USER");
-  const sid = await createSession(user.id);
-  await setSessionCookie(sid, user.role);
-
-  return Response.json({
-    user: {
-      email: user.email,
-      role: user.role,
-      isPrincipal: Boolean(user.is_principal),
-    },
-  });
 }

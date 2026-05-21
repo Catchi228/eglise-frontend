@@ -1,4 +1,5 @@
 import { assertSameOrigin, securityErrorResponse } from "@/lib/apiSecurity";
+import { authRouteError } from "@/lib/authRouteError";
 import {
   createSession,
   findUserByEmail,
@@ -26,24 +27,28 @@ export async function POST(req: Request) {
     return Response.json({ error: "Email et mot de passe requis" }, { status: 400 });
   }
 
-  const user = await findUserByEmail(email);
-  if (!user) {
-    return Response.json({ error: "Identifiants invalides" }, { status: 401 });
+  try {
+    const user = await findUserByEmail(email);
+    if (!user) {
+      return Response.json({ error: "Identifiants invalides" }, { status: 401 });
+    }
+
+    const ok = await verifyPassword(password, user.password_hash);
+    if (!ok) {
+      return Response.json({ error: "Identifiants invalides" }, { status: 401 });
+    }
+
+    const sid = await createSession(user.id);
+    await setSessionCookie(sid, user.role);
+
+    return Response.json({
+      user: {
+        email: user.email,
+        role: user.role,
+        isPrincipal: Boolean(user.is_principal),
+      },
+    });
+  } catch (e) {
+    return authRouteError(e);
   }
-
-  const ok = await verifyPassword(password, user.password_hash);
-  if (!ok) {
-    return Response.json({ error: "Identifiants invalides" }, { status: 401 });
-  }
-
-  const sid = await createSession(user.id);
-  await setSessionCookie(sid, user.role);
-
-  return Response.json({
-    user: {
-      email: user.email,
-      role: user.role,
-      isPrincipal: Boolean(user.is_principal),
-    },
-  });
 }
