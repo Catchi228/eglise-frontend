@@ -7,13 +7,13 @@ export function authRouteError(err: unknown): Response {
 
   if (msg.includes("DATABASE_URL")) {
     return Response.json(
-      { error: "Base de données non configurée sur le serveur (DATABASE_URL)." },
+      { error: "Service momentanément indisponible. Réessayez dans quelques minutes." },
       { status: 503 },
     );
   }
   if (msg.includes("SESSION_SECRET")) {
     return Response.json(
-      { error: "Session non configurée sur le serveur (SESSION_SECRET)." },
+      { error: "Service momentanément indisponible. Réessayez dans quelques minutes." },
       { status: 503 },
     );
   }

@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
-import { ShieldCheck } from "lucide-react";
 import { setAdminGateCookie, signIn } from "@/lib/session";
 import { getThemeIsDark, subscribeTheme } from "@/lib/theme";
 
@@ -353,21 +352,6 @@ export default function ConnexionClient() {
                 autoComplete={authMode === "SIGN_UP" && !isAdminLogin ? "new-password" : "current-password"}
               />
             </div>
-
-            <p
-              className={cn(
-                "text-xs",
-                isDark ? "text-slate-500" : "text-slate-500",
-              )}
-            >
-              <span className="inline-flex items-center gap-2">
-                <ShieldCheck
-                  className={cn("h-4 w-4", isDark ? "text-slate-500" : "text-slate-400")}
-                  aria-hidden="true"
-                />
-                Déconnexion sécurisée côté serveur (Supabase + cookies httpOnly).
-              </span>
-            </p>
 
             {error ? (
               <div
