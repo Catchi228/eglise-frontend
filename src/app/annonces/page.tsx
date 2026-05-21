@@ -26,7 +26,6 @@ function parseFRDate(d: string | undefined) {
 export default function AnnoncesPage() {
   const [q, setQ] = useState("");
   const [category, setCategory] = useState<Category>("Toutes");
-  const [onlyPublished, setOnlyPublished] = useState(true);
   const [tick, setTick] = useState(0);
   const [lightbox, setLightbox] = useState<{
     open: boolean;
@@ -53,7 +52,7 @@ export default function AnnoncesPage() {
   const filtered = useMemo(() => {
     const query = q.trim().toLowerCase();
     return readAnnouncements()
-      .filter((a) => (onlyPublished ? a.status === "Publiée" : true))
+      .filter((a) => a.status === "Publiée")
       .filter((a) => (category === "Toutes" ? true : a.category === category))
       .filter((a) => {
         if (!query) return true;
@@ -69,7 +68,7 @@ export default function AnnoncesPage() {
         const db = parseFRDate(b.startAt)?.getTime() ?? Number.POSITIVE_INFINITY;
         return da - db;
       });
-  }, [category, onlyPublished, q, tick]);
+  }, [category, q, tick]);
 
   return (
     <div className="space-y-5">
@@ -200,15 +199,7 @@ export default function AnnoncesPage() {
             </div>
           </div>
 
-          <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-sm text-[#5c544a]">
-            <label className="inline-flex cursor-pointer items-center gap-2">
-              <input
-                type="checkbox"
-                checked={onlyPublished}
-                onChange={(e) => setOnlyPublished(e.target.checked)}
-              />
-              Afficher seulement les annonces publiées
-            </label>
+          <div className="mt-3 flex flex-wrap items-center justify-end gap-2 text-sm text-[#5c544a]">
             <div>
               <span className="font-semibold text-[#2c2822]">
                 {filtered.length}

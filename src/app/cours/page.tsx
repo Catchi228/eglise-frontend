@@ -4,7 +4,7 @@ import Link from "next/link";
 import { CalendarDays, Clock3, FileText } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { readCourses, whenPublicContentReady } from "@/lib/adminData";
-import { compareCoursesForDisplay } from "@/lib/courseAccess";
+import { compareCoursesForDisplay, isCourseAccessible } from "@/lib/courseAccess";
 import type { Course } from "@/lib/types";
 
 function parseFRDate(d: string) {
@@ -27,7 +27,7 @@ function badgeClass(label: string) {
 }
 
 function CourseCard({ c }: { c: Course }) {
-  const accessible = c.status !== "À venir";
+  const accessible = isCourseAccessible(c);
   return (
     <article className="rounded-3xl border border-[#d9cfc3]/70 bg-white/70 p-4 text-[#2c2822] shadow-sm backdrop-blur">
       <div className="flex flex-wrap items-center gap-2">
@@ -113,11 +113,17 @@ export default function CoursPage() {
 
   const mockCourses = useMemo(() => readCourses(), [tick]);
 
-  const previous = mockCourses
+  const ecodim = mockCourses
+    .filter((c) => /^ecodim-2026-l\d{2}$/.test(c.id))
+    .sort(compareCoursesForDisplay);
+
+  const otherCourses = mockCourses.filter((c) => !/^ecodim-2026-l\d{2}$/.test(c.id));
+
+  const previous = otherCourses
     .filter((c) => c.status === "Terminé" && isWithinWeeksFromNow(c.endAt, 52))
     .sort(compareCoursesForDisplay);
-  const current  = mockCourses.filter((c) => c.status === "En cours").sort(compareCoursesForDisplay);
-  const upcoming = mockCourses.filter((c) => c.status === "À venir").sort(compareCoursesForDisplay);
+  const current  = otherCourses.filter((c) => c.status === "En cours").sort(compareCoursesForDisplay);
+  const upcoming = otherCourses.filter((c) => c.status === "À venir").sort(compareCoursesForDisplay);
 
   return (
     <div className="space-y-6 text-[#2c2822]">
@@ -142,6 +148,22 @@ export default function CoursPage() {
           <span className="font-semibold">QCM / quiz</span> pour s&apos;auto-évaluer.
         </p>
       </div>
+
+      {ecodim.length > 0 ? (
+        <section className="rounded-3xl border border-[#d9cfc3]/70 bg-white/60 p-4 text-[#2c2822] shadow-sm backdrop-blur">
+          <div className="mb-3">
+            <h2 className="text-lg font-semibold tracking-tight">Ecodim CBT 2026</h2>
+            <p className="mt-1 text-sm text-[#5c544a]">
+              10 leçons — contenu consultable et PDF téléchargeable
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {ecodim.map((c) => (
+              <CourseCard key={c.id} c={c} />
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {/* Cours précédents */}

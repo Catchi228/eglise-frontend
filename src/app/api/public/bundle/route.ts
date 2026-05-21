@@ -4,7 +4,9 @@ import { fetchAnnouncementsFromDb, fetchCoursesFromDb } from "@/lib/server/siteC
 /** Données portail : annonces publiques ; cours uniquement si session valide. */
 export async function GET() {
   const user = await getCurrentUser();
-  const announcements = await fetchAnnouncementsFromDb();
+  const announcements = (await fetchAnnouncementsFromDb()).filter(
+    (a) => a.status === "Publiée",
+  );
   const courses = user ? await fetchCoursesFromDb() : [];
 
   return Response.json(

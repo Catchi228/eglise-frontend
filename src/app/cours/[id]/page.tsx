@@ -86,6 +86,8 @@ function LessonReader({ sections, pdfUrl, pdfName }: {
           <a
             href={pdfUrl}
             download={pdfName || "cours.pdf"}
+            target="_blank"
+            rel="noopener noreferrer"
             className="flex w-full min-h-11 items-center justify-center gap-2 rounded-xl border border-[#cfc4b6]/80 bg-[#faf7f2] px-3 py-2.5 text-sm font-semibold text-[#2c2822] transition hover:bg-[#ebe4d8]/80"
           >
             <Download className="h-4 w-4 shrink-0" aria-hidden />
@@ -121,6 +123,8 @@ function LessonReader({ sections, pdfUrl, pdfName }: {
               <a
                 href={pdfUrl}
                 download={pdfName || "cours.pdf"}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex w-full min-h-11 items-center justify-center gap-2 rounded-xl border border-[#cfc4b6]/80 bg-[#faf7f2] px-3 py-2.5 text-xs font-semibold text-[#2c2822] transition hover:bg-[#ebe4d8]/80"
               >
                 <Download className="h-3.5 w-3.5" aria-hidden />
@@ -295,6 +299,8 @@ export default function CoursDetailPage() {
           <a
             href={lessonPdfUrl}
             download={lessonPdfName}
+            target="_blank"
+            rel="noopener noreferrer"
             className="mt-4 inline-flex items-center gap-2 rounded-full border border-[#cfc4b6]/80 bg-white px-5 py-2.5 text-sm font-semibold text-[#2c2822] hover:bg-[#ebe4d8]/80"
           >
             <Download className="h-4 w-4" /> Télécharger le PDF

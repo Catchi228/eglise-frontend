@@ -4,7 +4,8 @@ import {
   buildCoursePdfBuffer,
   pdfFilenameFromTitle,
 } from "@/lib/server/generateCoursePdf";
-import type { LessonSection } from "@/lib/types";
+import type { CourseStatus, LessonSection } from "@/lib/types";
+import { isCourseAccessible } from "@/lib/courseAccess";
 
 export const runtime = "nodejs";
 
@@ -54,7 +55,7 @@ export async function GET(
   );
   const course = rows[0];
   if (!course) return new Response("Cours introuvable", { status: 404 });
-  if (course.status === "À venir") {
+  if (!isCourseAccessible({ id: course.id, status: course.status as CourseStatus })) {
     return new Response("Leçon non disponible", { status: 403 });
   }
 

@@ -1,25 +1,27 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { prefetchPublicContent, resetPublicContentCache } from "@/lib/adminData";
 import { refreshSession } from "@/lib/session";
 
 /**
- * Hydrate la session côté client au démarrage de l'app, puis rafraîchit
- * périodiquement (toutes les 5 min) pour détecter les expirations.
- * Précharge le bundle public (annonces + cours) dès que la session est connue.
+ * Hydrate la session à chaque navigation, puis précharge le bundle public.
  */
 export function SessionProvider({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+
   useEffect(() => {
     void refreshSession().then((user) => {
       if (user) resetPublicContentCache();
       prefetchPublicContent();
     });
+  }, [pathname]);
+
+  useEffect(() => {
     const onFocus = () => void refreshSession();
     window.addEventListener("focus", onFocus);
-
     const t = window.setInterval(() => void refreshSession(), 5 * 60 * 1000);
-
     return () => {
       window.removeEventListener("focus", onFocus);
       window.clearInterval(t);

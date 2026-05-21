@@ -1,8 +1,12 @@
 import type { Course } from "@/lib/types";
 
-/** Cours consultables (pas « À venir »). */
-export function isCourseAccessible(course: Course | null | undefined): boolean {
-  return Boolean(course && course.status !== "À venir");
+/** Cours consultables (pas « À venir », sauf leçons Ecodim 2026 toujours ouvertes). */
+export function isCourseAccessible(
+  course: Pick<Course, "id" | "status"> | null | undefined,
+): boolean {
+  if (!course) return false;
+  if (/^ecodim-2026-l\d{2}$/.test(course.id)) return true;
+  return course.status !== "À venir";
 }
 
 /** PDF généré uniquement pour la leçon ouverte (contenu en base de cette leçon). */

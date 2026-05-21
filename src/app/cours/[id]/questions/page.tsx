@@ -6,7 +6,7 @@ import { notFound, useParams } from "next/navigation";
 import { PageBack } from "@/components/PageBack";
 import { readCourses, whenPublicContentReady } from "@/lib/adminData";
 import { isCourseAccessible } from "@/lib/courseAccess";
-import { getSession } from "@/lib/session";
+import { getSession, subscribeSession } from "@/lib/session";
 import type { Course, CourseQuestion } from "@/lib/types";
 
 export default function QuestionsPage() {
@@ -18,7 +18,13 @@ export default function QuestionsPage() {
   const [text, setText] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
-  const session = getSession();
+  const [session, setSession] = useState(() => getSession());
+
+  useEffect(() => {
+    const sync = () => setSession(getSession());
+    sync();
+    return subscribeSession(sync);
+  }, []);
 
   useEffect(() => {
     if (!id) {
