@@ -1,177 +1,55 @@
-# Déploiement en production
+# Déploiement Vercel + Supabase
 
-Guide pour héberger l’application sur un **VPS** (Node.js + MariaDB). Ce projet n’est **pas** adapté à Vercel ou à un hébergement serverless sans disque persistant.
+## 1. Supabase (base de données)
 
-## Prérequis serveur
+1. Créer un projet sur [supabase.com](https://supabase.com).
+2. **SQL Editor** → coller et exécuter le contenu de `db/schema.sql`.
+3. (Optionnel) Seed depuis votre PC :
 
-- Node.js **20+**
-- MariaDB ou MySQL **10.6+**
-- Reverse proxy HTTPS (Nginx, Caddy, etc.)
-- Volume disque persistant pour `public/uploads/`
+   ```bash
+   npm run db:seed
+   npm run db:seed:ecodim
+   ```
 
-## 1. Base de données
+4. Récupérer la chaîne de connexion :
+   - **Settings → Database → Connection string**
+   - Mode **Transaction** (pooler, port **6543**)
+   - Format : `postgresql://postgres.[ref]:[password]@...pooler.supabase.com:6543/postgres`
 
-Créer la base et un utilisateur dédié (exemple) :
+## 2. Vercel (frontend)
 
-```sql
-CREATE DATABASE eglise CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER 'eglise_app'@'localhost' IDENTIFIED BY 'mot-de-passe-fort';
-GRANT ALL PRIVILEGES ON eglise.* TO 'eglise_app'@'localhost';
-FLUSH PRIVILEGES;
-```
+1. Importer le dépôt Git sur [vercel.com](https://vercel.com).
+2. Framework : **Next.js** (détection automatique).
+3. Variables d’environnement (Settings → Environment Variables) :
 
-Appliquer le schéma :
+   | Variable | Obligatoire | Description |
+   | -------- | ----------- | ----------- |
+   | `DATABASE_URL` | Oui | Connection string Supabase (Transaction pooler) |
+   | `SESSION_SECRET` | Oui | Min. 32 caractères aléatoires (`openssl rand -hex 32`) |
+   | `NODE_ENV` | Auto | `production` (Vercel le définit) |
+   | `BIBLE_LOCAL_ONLY` | Recommandé | `1` si la Bible est incluse dans le build |
+   | `ALLOWED_ORIGINS` | Optionnel | Domaines autorisés pour POST (ex. `https://www.example.org`) |
 
-```bash
-npm run db:schema
-```
+4. Déployer (`git push` ou bouton Deploy).
 
-## 2. Variables d’environnement
+## 3. Uploads (important)
 
-Copier `.env.example` vers `.env` ou `.env.local` sur le serveur :
+Sur Vercel, le disque est **éphémère**. Les fichiers écrits dans `public/uploads/` ne persistent pas entre déploiements.
 
-| Variable | Obligatoire | Description |
-|----------|-------------|-------------|
-| `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` | Oui | Connexion MariaDB |
-| `SESSION_SECRET` | Oui | Min. 32 caractères aléatoires (`openssl rand -hex 32`) |
-| `NODE_ENV` | Oui | `production` |
-| `ALLOWED_ORIGINS` | Recommandé | Origines HTTPS supplémentaires, séparées par des virgules |
-| `SEED_ADMIN_PASSWORD` | Au premier seed | Mot de passe admin fort (ne pas garder `admin123`) |
-| `OPENAI_API_KEY` | Optionnel | Génération IA des questions QCM en admin |
+Pour la production, migrer les uploads vers **Supabase Storage** (logo, images d’annonces). En attendant, les uploads locaux fonctionnent en dev uniquement.
 
-Vérification :
-
-```bash
-npm run check:env
-```
-
-## 3. Données initiales
-
-### Compte admin et démo
+## 4. Mises à jour
 
 ```bash
-# Définir SEED_ADMIN_PASSWORD dans .env avant le seed
-npm run db:seed
+git push   # Vercel rebuild automatiquement
 ```
 
-### Cours Ecodim CBT 2026 (10 leçons + contenu texte)
+Pour les changements de schéma SQL, ré-exécuter les migrations dans l’éditeur Supabase ou `npm run db:schema` depuis votre PC (avec `DATABASE_URL` dans `.env.local`).
+
+## 5. Vérification
 
 ```bash
-npm run db:seed:ecodim
+npm run check:env:production
 ```
 
-Aucun PDF à déposer : chaque leçon expose un téléchargement généré depuis le contenu en base (`GET /api/courses/[id]/pdf`, utilisateur connecté).
-
-## 4. Build et démarrage
-
-```bash
-npm ci
-npm run build
-npm run start
-```
-
-En production, utiliser un gestionnaire de processus (**PM2**, **systemd**) pour redémarrer l’app en cas de crash.
-
-Exemple PM2 :
-
-```bash
-pm2 start npm --name eglise -- start
-pm2 save
-```
-
-## 5. Reverse proxy (Nginx)
-
-Exemple minimal (adapter le nom de domaine) :
-
-```nginx
-server {
-    listen 443 ssl http2;
-    server_name www.votredomaine.org;
-
-    # certificats SSL (Let's Encrypt, etc.)
-
-    location / {
-        proxy_pass http://127.0.0.1:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-```
-
-## 6. Bible intégrée (100 % locale, sans API à la lecture)
-
-Une seule fois (machine avec Internet), avant ou après déploiement :
-
-```bash
-npm run bible:download
-npm run bible:verify
-```
-
-Cela enregistre **~1 189 chapitres** (Louis Segond 1910) dans `public/bible/data/`.  
-Durée indicative : 15–30 minutes. **Commitez** ce dossier avec le projet ou copiez-le sur le serveur.
-
-En production, dans `.env` :
-
-```env
-BIBLE_LOCAL_ONLY=1
-```
-
-Le site ne tentera plus d’appeler bible.helloao.org : tout est lu depuis le disque (rapide, stable, hors ligne possible).
-
-## 7. Fichiers uploadés
-
-- Répertoire : `public/uploads/` (logo, images d’annonces, PDF de cours).
-- **Sauvegarder** ce dossier avec la base de données.
-- Ne pas le supprimer lors des mises à jour de code.
-
-## 8. Sécurité avant ouverture au public
-
-- [ ] `SESSION_SECRET` unique et long (≥ 32 caractères)
-- [ ] Mot de passe admin changé (plus `admin123`)
-- [ ] HTTPS actif sur tout le site
-- [ ] `ALLOWED_ORIGINS` configuré si plusieurs domaines
-- [ ] MariaDB : utilisateur à privilèges limités, pas `root` en prod
-- [ ] Créer les **QCM** dans `/admin/qcm` pour les leçons accessibles (1–4)
-- [ ] Mettre à jour Next.js quand des correctifs de sécurité sont publiés (`npm audit`)
-
-## 9. Tests avant go-live
-
-```bash
-npm run lint
-npm run build
-npm run test:e2e
-```
-
-Les tests E2E démarrent l’app sur le port **3001** et nécessitent une base seedée (`PLAYWRIGHT_BASE_URL` optionnel).
-
-## 10. Mises à jour
-
-```bash
-git pull
-npm ci
-npm run build
-# Redémarrer le processus Node (pm2 restart eglise, etc.)
-```
-
-Si le schéma évolue : `npm run db:schema` (idempotent).
-
-Pour réimporter uniquement les leçons Ecodim : `npm run db:seed:ecodim`.
-
-## Dépannage
-
-| Problème | Piste |
-|----------|--------|
-| Redirection infinie connexion | Vérifier cookies `secure` + HTTPS |
-| PDF introuvable | Vérifier connexion utilisateur ; le PDF est généré par `/api/courses/[id]/pdf` |
-| Erreur `SESSION_SECRET` au démarrage | Variable absente ou &lt; 32 caractères |
-| Admin inaccessible | Connexion admin + code gate (`/admin/connexion`) |
-| Cours vides côté client | Base seedée, utilisateur connecté |
-
-## Références
-
-- Configuration locale : `README.md`
-- PDF de seed : `seed-data/README.md`
-- Schéma SQL : `db/schema.sql`
+Sur Vercel : consulter les **Runtime Logs** si erreur 500 (souvent `DATABASE_URL` ou `SESSION_SECRET` manquant).

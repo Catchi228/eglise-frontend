@@ -6,7 +6,7 @@
  * Usage : npm run db:seed:ecodim
  */
 import { config as loadEnv } from "dotenv";
-import mysql from "mysql2/promise";
+import { createDbClient } from "./db-client.mjs";
 
 loadEnv({ path: ".env.local" });
 loadEnv({ path: ".env" });
@@ -376,36 +376,19 @@ const LESSONS = [
   },
 ];
 
-const {
-  DB_HOST = "127.0.0.1",
-  DB_PORT = "3306",
-  DB_USER = "root",
-  DB_PASSWORD = "",
-  DB_NAME = "eglise",
-} = process.env;
-
-const conn = await mysql.createConnection({
-  host: DB_HOST, port: Number(DB_PORT),
-  user: DB_USER, password: DB_PASSWORD,
-  database: DB_NAME, charset: "utf8mb4",
-});
-
-// Ajoute la colonne content si elle n'existe pas
-await conn.execute(
-  `ALTER TABLE courses ADD COLUMN IF NOT EXISTS content LONGTEXT DEFAULT NULL`,
-).catch(() => {});
-console.log("Colonne content vérifiée/ajoutée.");
+const db = createDbClient();
+console.log("Connexion PostgreSQL OK");
 
 async function removeCourse(id) {
-  await conn.execute("DELETE FROM course_pdfs WHERE course_id = ?", [id]);
-  await conn.execute("DELETE FROM course_sections WHERE course_id = ?", [id]);
-  await conn.execute("DELETE FROM course_tags WHERE course_id = ?", [id]);
-  const [qcmRows] = await conn.execute("SELECT id FROM qcm WHERE course_id = ?", [id]);
+  await db.execute("DELETE FROM course_pdfs WHERE course_id = ?", [id]);
+  await db.execute("DELETE FROM course_sections WHERE course_id = ?", [id]);
+  await db.execute("DELETE FROM course_tags WHERE course_id = ?", [id]);
+  const qcmRows = await db.query("SELECT id FROM qcm WHERE course_id = ?", [id]);
   for (const row of qcmRows) {
-    await conn.execute("DELETE FROM qcm_questions WHERE qcm_id = ?", [row.id]);
+    await db.execute("DELETE FROM qcm_questions WHERE qcm_id = ?", [row.id]);
   }
-  await conn.execute("DELETE FROM qcm WHERE course_id = ?", [id]);
-  await conn.execute("DELETE FROM courses WHERE id = ?", [id]);
+  await db.execute("DELETE FROM qcm WHERE course_id = ?", [id]);
+  await db.execute("DELETE FROM courses WHERE id = ?", [id]);
 }
 
 for (const id of ["c1", "c2", "c3", "ecodim-2026"]) await removeCourse(id);
@@ -418,29 +401,29 @@ for (const L of LESSONS) {
   const status = courseStatus(L.n);
   const title  = `Leçon ${L.n} — ${L.title}`;
 
-  await conn.execute(
+  await db.execute(
     `INSERT INTO courses (id, title, description, content, status, start_at, end_at, time)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-     ON DUPLICATE KEY UPDATE
-       title=VALUES(title), description=VALUES(description), content=VALUES(content),
-       status=VALUES(status), start_at=VALUES(start_at), end_at=VALUES(end_at), time=VALUES(time)`,
+     ON CONFLICT (id) DO UPDATE SET
+       title = EXCLUDED.title, description = EXCLUDED.description, content = EXCLUDED.content,
+       status = EXCLUDED.status, start_at = EXCLUDED.start_at, end_at = EXCLUDED.end_at, time = EXCLUDED.time`,
     [id, title, L.description, JSON.stringify(L.content), status, month.start, month.end, "09:00"],
   );
 
-  await conn.execute(`DELETE FROM course_tags WHERE course_id = ?`, [id]);
+  await db.execute(`DELETE FROM course_tags WHERE course_id = ?`, [id]);
   for (const tag of ["Ecodim", "CBT 2026", "École du dimanche", `Leçon ${L.n}`]) {
-    await conn.execute(`INSERT INTO course_tags (course_id, tag) VALUES (?, ?)`, [id, tag]);
+    await db.execute(`INSERT INTO course_tags (course_id, tag) VALUES (?, ?)`, [id, tag]);
   }
 
-  await conn.execute(`DELETE FROM course_sections WHERE course_id = ?`, [id]);
-  await conn.execute(
+  await db.execute(`DELETE FROM course_sections WHERE course_id = ?`, [id]);
+  await db.execute(
     `INSERT INTO course_sections (id, course_id, title, duration_min, position) VALUES (?, ?, ?, ?, 0)`,
     [`${id}-s1`, id, "Étude et discussion", 60],
   );
 
-  await conn.execute(`DELETE FROM course_pdfs WHERE course_id = ?`, [id]);
+  await db.execute(`DELETE FROM course_pdfs WHERE course_id = ?`, [id]);
   if (status !== "À venir") {
-    await conn.execute(
+    await db.execute(
       `INSERT INTO course_pdfs (id, course_id, name, path) VALUES (?, ?, ?, ?)`,
       [`${id}-pdf`, id, `${title}.pdf`, coursePdfPath(id)],
     );
@@ -449,6 +432,6 @@ for (const L of LESSONS) {
   console.log(`  ${id} [${status}] ${title}`);
 }
 
-await conn.end();
+await db.end();
 console.log(`\n10 leçons Ecodim CBT 2026 : leçons 1–3 terminées, leçon 4 en cours, 5–10 à venir.`);
 console.log(`PDF : génération automatique (/api/courses/[id]/pdf) — aucun fichier à déposer.`);

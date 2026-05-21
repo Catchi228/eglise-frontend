@@ -54,7 +54,7 @@ export async function POST(req: Request) {
   await execute(
     `INSERT INTO qcm (id, course_id, title, question_count, updated_at)
      VALUES (?, ?, ?, 0, NOW())
-     ON DUPLICATE KEY UPDATE title = VALUES(title), updated_at = NOW()`,
+     ON CONFLICT (id) DO UPDATE SET title = EXCLUDED.title, updated_at = NOW()`,
     [id, courseId, title],
   );
 

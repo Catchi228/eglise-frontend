@@ -365,7 +365,7 @@ export default function ConnexionClient() {
                   className={cn("h-4 w-4", isDark ? "text-slate-500" : "text-slate-400")}
                   aria-hidden="true"
                 />
-                Déconnexion sécurisée côté serveur (MariaDB + cookies httpOnly).
+                Déconnexion sécurisée côté serveur (Supabase + cookies httpOnly).
               </span>
             </p>
 

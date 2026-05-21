@@ -40,7 +40,7 @@ export async function PATCH(req: Request) {
     return Response.json({ error: "JSON invalide" }, { status: 400 });
   }
   if (payload.markAllRead === true) {
-    await execute("UPDATE notifications SET is_read = 1 WHERE is_read = 0");
+    await execute("UPDATE notifications SET is_read = TRUE WHERE is_read = FALSE");
     return Response.json({ ok: true });
   }
   const idStr = typeof payload.id === "string" ? payload.id : "";
@@ -48,6 +48,6 @@ export async function PATCH(req: Request) {
   if (!Number.isFinite(numeric) || numeric <= 0) {
     return Response.json({ error: "id invalide" }, { status: 400 });
   }
-  await execute("UPDATE notifications SET is_read = 1 WHERE id = ?", [numeric]);
+  await execute("UPDATE notifications SET is_read = TRUE WHERE id = ?", [numeric]);
   return Response.json({ ok: true });
 }

@@ -35,8 +35,8 @@ export async function POST(req: Request) {
     return Response.json({ email: current });
   }
   await execute(
-    `INSERT INTO settings (\`key\`, value) VALUES (?, ?)
-     ON DUPLICATE KEY UPDATE value = VALUES(value)`,
+    `INSERT INTO settings (key, value) VALUES (?, ?)
+     ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value`,
     [KEY, email],
   );
   return Response.json({ email });

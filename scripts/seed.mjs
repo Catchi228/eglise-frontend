@@ -3,48 +3,34 @@
 
 import { config as loadEnv } from "dotenv";
 import bcrypt from "bcryptjs";
-import mysql from "mysql2/promise";
+import { createDbClient } from "./db-client.mjs";
 
 loadEnv({ path: ".env.local" });
 loadEnv({ path: ".env" });
 
 const {
-  DB_HOST = "127.0.0.1",
-  DB_PORT = "3306",
-  DB_USER = "root",
-  DB_PASSWORD = "",
-  DB_NAME = "eglise",
   SEED_ADMIN_EMAIL = "admin@cbdtogo.org",
   SEED_ADMIN_PASSWORD = "admin123",
 } = process.env;
 
-const conn = await mysql.createConnection({
-  host: DB_HOST,
-  port: Number(DB_PORT),
-  user: DB_USER,
-  password: DB_PASSWORD,
-  database: DB_NAME,
-  charset: "utf8mb4",
-  multipleStatements: true,
-});
-
-console.log(`Connexion OK sur ${DB_HOST}:${DB_PORT}/${DB_NAME}`);
+const db = createDbClient();
+console.log("Connexion PostgreSQL OK");
 
 const passwordHash = await bcrypt.hash(SEED_ADMIN_PASSWORD, 10);
 
-await conn.execute(
+await db.execute(
   `INSERT INTO users (email, password_hash, role, is_principal)
-   VALUES (?, ?, 'ADMIN', 1)
-   ON DUPLICATE KEY UPDATE password_hash = VALUES(password_hash),
-                           role = 'ADMIN',
-                           is_principal = 1`,
+   VALUES (?, ?, 'ADMIN', TRUE)
+   ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash,
+                                     role = 'ADMIN',
+                                     is_principal = TRUE`,
   [SEED_ADMIN_EMAIL.toLowerCase(), passwordHash],
 );
 
-await conn.execute(
-  `INSERT INTO settings (\`key\`, value)
+await db.execute(
+  `INSERT INTO settings (key, value)
    VALUES ('principal_email', ?)
-   ON DUPLICATE KEY UPDATE value = VALUES(value)`,
+   ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value`,
   [SEED_ADMIN_EMAIL.toLowerCase()],
 );
 
@@ -98,25 +84,25 @@ const announcements = [
 ];
 
 for (const a of announcements) {
-  await conn.execute(
+  await db.execute(
     `INSERT INTO announcements
        (id, category, status, title, body, city, start_at, end_at, contact_email)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-     ON DUPLICATE KEY UPDATE
-       category = VALUES(category),
-       status = VALUES(status),
-       title = VALUES(title),
-       body = VALUES(body),
-       city = VALUES(city),
-       start_at = VALUES(start_at),
-       end_at = VALUES(end_at),
-       contact_email = VALUES(contact_email)`,
+     ON CONFLICT (id) DO UPDATE SET
+       category = EXCLUDED.category,
+       status = EXCLUDED.status,
+       title = EXCLUDED.title,
+       body = EXCLUDED.body,
+       city = EXCLUDED.city,
+       start_at = EXCLUDED.start_at,
+       end_at = EXCLUDED.end_at,
+       contact_email = EXCLUDED.contact_email`,
     [a.id, a.category, a.status, a.title, a.body, a.city, a.startAt, a.endAt, a.contactEmail],
   );
-  await conn.execute(`DELETE FROM announcement_images WHERE announcement_id = ?`, [a.id]);
+  await db.execute(`DELETE FROM announcement_images WHERE announcement_id = ?`, [a.id]);
   let pos = 0;
   for (const url of a.images) {
-    await conn.execute(
+    await db.execute(
       `INSERT INTO announcement_images (announcement_id, path, position) VALUES (?, ?, ?)`,
       [a.id, url, pos++],
     );
@@ -175,28 +161,28 @@ const courses = [
 ];
 
 for (const c of courses) {
-  await conn.execute(
+  await db.execute(
     `INSERT INTO courses (id, title, description, status, start_at, end_at, time)
      VALUES (?, ?, ?, ?, ?, ?, ?)
-     ON DUPLICATE KEY UPDATE
-       title = VALUES(title),
-       description = VALUES(description),
-       status = VALUES(status),
-       start_at = VALUES(start_at),
-       end_at = VALUES(end_at),
-       time = VALUES(time)`,
+     ON CONFLICT (id) DO UPDATE SET
+       title = EXCLUDED.title,
+       description = EXCLUDED.description,
+       status = EXCLUDED.status,
+       start_at = EXCLUDED.start_at,
+       end_at = EXCLUDED.end_at,
+       time = EXCLUDED.time`,
     [c.id, c.title, c.description, c.status, c.startAt, c.endAt, c.time],
   );
 
-  await conn.execute(`DELETE FROM course_tags WHERE course_id = ?`, [c.id]);
+  await db.execute(`DELETE FROM course_tags WHERE course_id = ?`, [c.id]);
   for (const tag of c.tags) {
-    await conn.execute(`INSERT INTO course_tags (course_id, tag) VALUES (?, ?)`, [c.id, tag]);
+    await db.execute(`INSERT INTO course_tags (course_id, tag) VALUES (?, ?)`, [c.id, tag]);
   }
 
-  await conn.execute(`DELETE FROM course_sections WHERE course_id = ?`, [c.id]);
+  await db.execute(`DELETE FROM course_sections WHERE course_id = ?`, [c.id]);
   let pos = 0;
   for (const s of c.sections) {
-    await conn.execute(
+    await db.execute(
       `INSERT INTO course_sections (id, course_id, title, duration_min, position)
        VALUES (?, ?, ?, ?, ?)`,
       [s.id, c.id, s.title, s.durationMin, pos++],
@@ -207,10 +193,10 @@ for (const c of courses) {
 console.log(`Cours seedés: ${courses.length}`);
 
 const now = Date.now();
-await conn.execute(
+await db.execute(
   `INSERT INTO messages (id, from_email, subject, body, status, course_ref, created_at)
-   VALUES (?, ?, ?, ?, ?, ?, FROM_UNIXTIME(?))
-   ON DUPLICATE KEY UPDATE subject = VALUES(subject)`,
+   VALUES (?, ?, ?, ?, ?, ?, to_timestamp(?))
+   ON CONFLICT (id) DO UPDATE SET subject = EXCLUDED.subject`,
   [
     "m-seed-1",
     "jean.martin@email.fr",
@@ -222,10 +208,10 @@ await conn.execute(
   ],
 );
 
-await conn.execute(
+await db.execute(
   `INSERT INTO messages (id, from_email, subject, body, status, course_ref, created_at)
-   VALUES (?, ?, ?, ?, ?, NULL, FROM_UNIXTIME(?))
-   ON DUPLICATE KEY UPDATE subject = VALUES(subject)`,
+   VALUES (?, ?, ?, ?, ?, NULL, to_timestamp(?))
+   ON CONFLICT (id) DO UPDATE SET subject = EXCLUDED.subject`,
   [
     "m-seed-2",
     "sophie.k@email.fr",
@@ -239,13 +225,13 @@ await conn.execute(
 console.log("Messages seedés: 2");
 
 const qcmId = "qcm-c1-eval";
-await conn.execute(
+await db.execute(
   `INSERT INTO qcm (id, course_id, title, question_count, updated_at)
    VALUES (?, 'c1', 'Évaluation — Les Épîtres de Paul', 3, NOW())
-   ON DUPLICATE KEY UPDATE title = VALUES(title), question_count = VALUES(question_count)`,
+   ON CONFLICT (id) DO UPDATE SET title = EXCLUDED.title, question_count = EXCLUDED.question_count`,
   [qcmId],
 );
-await conn.query("DELETE FROM qcm_questions WHERE qcm_id = ?", [qcmId]);
+await db.execute("DELETE FROM qcm_questions WHERE qcm_id = ?", [qcmId]);
 const questions = [
   {
     prompt: "Qui a écrit la majorité des épîtres du Nouveau Testament ?",
@@ -265,7 +251,7 @@ const questions = [
 ];
 let pos = 0;
 for (const q of questions) {
-  await conn.execute(
+  await db.execute(
     `INSERT INTO qcm_questions (qcm_id, prompt, choices, correct_index, position)
      VALUES (?, ?, ?, ?, ?)`,
     [qcmId, q.prompt, JSON.stringify(q.choices), q.correct, pos++],
@@ -273,5 +259,5 @@ for (const q of questions) {
 }
 console.log("QCM seedé pour le cours c1");
 
-await conn.end();
+await db.end();
 console.log("Seed terminé.");

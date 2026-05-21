@@ -104,7 +104,7 @@ export async function PUT(req: Request) {
     [Date.now()],
   );
   await execute(
-    "INSERT INTO notifications (text, is_read, ts) VALUES ('Annonces mises à jour.', 0, ?)",
+    "INSERT INTO notifications (text, is_read, ts) VALUES ('Annonces mises à jour.', FALSE, ?)",
     [Date.now()],
   );
 

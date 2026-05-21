@@ -7,7 +7,10 @@ import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const localPath = resolve(root, ".env.local");
+const strict = process.argv.includes("--production");
+const envPaths = strict
+  ? [resolve(root, ".env"), resolve(root, ".env.local")]
+  : [resolve(root, ".env.local"), resolve(root, ".env")];
 
 function parseEnvFile(p) {
   if (!existsSync(p)) return {};
@@ -24,15 +27,35 @@ function parseEnvFile(p) {
   return out;
 }
 
-const local = parseEnvFile(localPath);
+let env = {};
+let loadedFrom = null;
+for (const p of envPaths) {
+  if (existsSync(p)) {
+    env = { ...env, ...parseEnvFile(p) };
+    loadedFrom = p;
+  }
+}
+
 const issues = [];
 
-if (!existsSync(localPath)) issues.push(".env.local manquant (copier depuis .env.example)");
+if (!loadedFrom) {
+  issues.push(
+    strict
+      ? ".env manquant (configurer les variables sur Vercel)"
+      : ".env.local manquant (copier depuis .env.example)",
+  );
+}
 
-const sec = local.SESSION_SECRET;
+const sec = env.SESSION_SECRET;
 if (!sec) issues.push("SESSION_SECRET vide ou absent");
 else if (sec.length < 32) issues.push("SESSION_SECRET doit faire au moins 32 caractères");
 
+if (strict) {
+  if (!env.DATABASE_URL?.trim()) issues.push("DATABASE_URL vide ou absent");
+  if (!env.NODE_ENV || env.NODE_ENV !== "production") {
+    issues.push("(info) NODE_ENV devrait être production sur Vercel");
+  }
+}
 
 let exitCode = 0;
 for (const m of issues) {

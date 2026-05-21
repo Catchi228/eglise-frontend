@@ -134,7 +134,7 @@ export async function POST(req: Request) {
   );
 
   await execute(
-    "INSERT INTO notifications (text, is_read, ts) VALUES (?, 0, ?)",
+    "INSERT INTO notifications (text, is_read, ts) VALUES (?, FALSE, ?)",
     [`Nouveau message: ${subject}`, Date.now()],
   );
 

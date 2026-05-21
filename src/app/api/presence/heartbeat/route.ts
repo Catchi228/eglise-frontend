@@ -13,7 +13,7 @@ export async function POST() {
   const now = Date.now();
   await execute(
     `INSERT INTO presence (email, role, last_seen) VALUES (?, ?, ?)
-     ON DUPLICATE KEY UPDATE role = VALUES(role), last_seen = VALUES(last_seen)`,
+     ON CONFLICT (email) DO UPDATE SET role = EXCLUDED.role, last_seen = EXCLUDED.last_seen`,
     [email, role, now],
   );
 

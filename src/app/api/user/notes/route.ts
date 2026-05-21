@@ -48,7 +48,7 @@ export async function PUT(req: Request) {
 
     await execute(
       `INSERT INTO user_notes (user_id, course_id, body) VALUES (?, ?, ?)
-       ON DUPLICATE KEY UPDATE body = VALUES(body), updated_at = CURRENT_TIMESTAMP`,
+       ON CONFLICT (user_id, course_id) DO UPDATE SET body = EXCLUDED.body, updated_at = NOW()`,
       [user.id, courseId, body],
     );
 

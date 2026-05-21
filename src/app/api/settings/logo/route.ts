@@ -16,8 +16,8 @@ async function writePath(value: string | null): Promise<void> {
     await execute("DELETE FROM settings WHERE `key` = ?", [KEY]);
   } else {
     await execute(
-      `INSERT INTO settings (\`key\`, value) VALUES (?, ?)
-       ON DUPLICATE KEY UPDATE value = VALUES(value)`,
+      `INSERT INTO settings (key, value) VALUES (?, ?)
+       ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value`,
       [KEY, value],
     );
   }

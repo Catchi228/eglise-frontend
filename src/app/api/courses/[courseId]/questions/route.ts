@@ -75,7 +75,7 @@ export async function POST(
     );
 
     await execute(
-      "INSERT INTO notifications (text, is_read, ts) VALUES (?, 0, ?)",
+      "INSERT INTO notifications (text, is_read, ts) VALUES (?, FALSE, ?)",
       [`Nouvelle question sur le cours ${courseId}`, Date.now()],
     );
 

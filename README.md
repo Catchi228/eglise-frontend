@@ -5,7 +5,7 @@ Application [Next.js](https://nextjs.org) (App Router) pour le portail et l’ad
 ## Prérequis
 
 - Node.js 20+
-- **MariaDB / MySQL** (ex. XAMPP : démarrer le service **MySQL** avant `npm run dev`)
+- Projet [Supabase](https://supabase.com) (PostgreSQL)
 
 ## Configuration
 
@@ -15,7 +15,7 @@ Application [Next.js](https://nextjs.org) (App Router) pour le portail et l’ad
    copy .env.example .env.local
    ```
 
-   Ajuster `DB_*` si votre MariaDB n’est pas en `root` sans mot de passe sur `127.0.0.1:3306`.
+   Renseigner `DATABASE_URL` (Supabase → Settings → Database → Connection string, mode **Transaction**).
 
 2. Générer un `SESSION_SECRET` suffisamment long en production (ex. `openssl rand -hex 32`).
 
@@ -49,25 +49,25 @@ Ouvrir [http://localhost:3000](http://localhost:3000).
 
 ## Déploiement production
 
-Voir **[DEPLOY.md](./DEPLOY.md)** (VPS, MariaDB, HTTPS, checklist sécurité).
+Voir **[DEPLOY.md](./DEPLOY.md)** — frontend sur **Vercel**, base de données sur **Supabase**.
 
 ## Données et fichiers
 
-- Contenus (annonces, cours, QCM, messages, etc.) : **MariaDB**, base `eglise` (voir `db/schema.sql`).
-- Uploads (logo, images d’annonces, PDF de cours) : répertoire `public/uploads/` (ignoré par Git sauf `.gitkeep`).
-- Authentification : cookies **httpOnly** (`eglise_sid`) + cookies signés pour le proxy (`eglise_role`, `eglise_admin_gate`). Le fichier `src/proxy.ts` remplace l’ancien `middleware.ts` (Next.js 16 ; doit être au même niveau que `src/app`).
+- Contenus (annonces, cours, QCM, messages, etc.) : **Supabase PostgreSQL** (voir `db/schema.sql`).
+- Uploads (logo, images d’annonces) : `public/uploads/` en local ; migrer vers **Supabase Storage** pour la prod Vercel.
+- Authentification : cookies **httpOnly** (`eglise_sid`) + cookies signés pour le proxy (`eglise_role`, `eglise_admin_gate`).
 
 ## Scripts npm
 
-| Script        | Description                                      |
-| ------------- | ------------------------------------------------ |
-| `npm run dev` | Serveur de développement                       |
-| `npm run build` | Build production                             |
-| `npm run db:schema` | Applique uniquement `db/schema.sql`    |
-| `npm run db:seed`   | Exécute `scripts/seed.mjs` (admin + mocks) |
-| `npm run db:init`   | Schéma + seed                            |
-| `npm run db:seed:ecodim` | 10 leçons Ecodim 2026 + contenu texte |
-| `npm run check:env` | Vérifie SESSION_SECRET                   |
+| Script | Description |
+| ------ | ----------- |
+| `npm run dev` | Serveur de développement |
+| `npm run build` | Build production |
+| `npm run db:schema` | Applique `db/schema.sql` sur Supabase |
+| `npm run db:seed` | Admin + données de démo |
+| `npm run db:init` | Schéma + seed |
+| `npm run db:seed:ecodim` | 10 leçons Ecodim 2026 |
+| `npm run check:env` | Vérifie SESSION_SECRET et DATABASE_URL |
 
 ## Learn More (Next.js)
 
