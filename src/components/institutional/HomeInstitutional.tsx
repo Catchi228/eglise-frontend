@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { CBT_INSTITUTION } from "@/lib/cbtInstitution";
-import { getSession, subscribeSession } from "@/lib/session";
+import { useSession } from "@/lib/useSession";
 
 const HERO_SLIDES = [
   {
@@ -47,15 +47,7 @@ function useInViewOnce(className: string) {
 
 export function HomeInstitutional() {
   const [slide, setSlide] = useState(0);
-  const [session, setSession] = useState(() =>
-    typeof window === "undefined" ? null : getSession(),
-  );
-
-  useEffect(() => {
-    const sync = () => setSession(getSession());
-    sync();
-    return subscribeSession(sync);
-  }, []);
+  const { session } = useSession();
 
   useEffect(() => {
     const t = window.setInterval(() => {
@@ -111,7 +103,7 @@ export function HomeInstitutional() {
                 <ArrowRight className="h-4 w-4" aria-hidden />
               </Link>
               <Link
-                href="/connexion"
+                href={session ? "/parametres" : "/connexion?next=/parametres"}
                 className="inline-flex items-center gap-2 rounded-full border border-white/35 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.15)] backdrop-blur-md transition hover:bg-white/20"
               >
                 Espace membre

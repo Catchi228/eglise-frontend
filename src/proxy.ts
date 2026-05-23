@@ -52,20 +52,6 @@ export function proxy(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  const needsAuth =
-    pathname === "/cours" ||
-    pathname.startsWith("/cours/") ||
-    pathname === "/mon-espace" ||
-    pathname.startsWith("/mon-espace/");
-
-  if (needsAuth) {
-    if (hasSession) return NextResponse.next();
-    const url = req.nextUrl.clone();
-    url.pathname = "/connexion";
-    url.search = `?next=${encodeURIComponent(pathname + search)}`;
-    return NextResponse.redirect(url);
-  }
-
   return NextResponse.next();
 }
 

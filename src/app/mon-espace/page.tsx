@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   BookMarked,
   BookOpen,
@@ -9,8 +9,7 @@ import {
   HelpCircle,
   NotebookPen,
 } from "lucide-react";
-import type { Session } from "@/lib/session";
-import { getSession, isSessionHydrated, subscribeSession } from "@/lib/session";
+import { useSession } from "@/lib/useSession";
 
 const tiles = [
   {
@@ -41,23 +40,7 @@ const tiles = [
 ] as const;
 
 export default function MonEspacePage() {
-  const [session, setSession] = useState<Session | null>(null);
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    const sync = () => {
-      setSession(getSession());
-      if (isSessionHydrated()) setReady(true);
-    };
-    sync();
-    // Affichage dégradé après 5 s max si l'API met du temps
-    const fallback = window.setTimeout(() => setReady(true), 5000);
-    const unsub = subscribeSession(sync);
-    return () => {
-      unsub();
-      window.clearTimeout(fallback);
-    };
-  }, []);
+  const { session, ready } = useSession();
 
   return (
     <div className="space-y-10 pb-6">

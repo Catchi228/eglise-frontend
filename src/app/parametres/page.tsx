@@ -1,21 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { PageBack } from "@/components/PageBack";
 import { LogIn, LogOut, Settings } from "lucide-react";
-import type { Session } from "@/lib/session";
 import {
   changeEmail,
   changePassword,
-  getSession,
   signOut,
-  subscribeSession,
 } from "@/lib/session";
+import { useSession } from "@/lib/useSession";
 
 export default function ParametresComptePage() {
-  const [session, setSession] = useState<Session | null>(null);
-  const [ready, setReady] = useState(false);
+  const { session, ready } = useSession();
 
   const [accountError, setAccountError] = useState<string | null>(null);
   const [accountSuccess, setAccountSuccess] = useState<string | null>(null);
@@ -24,18 +21,6 @@ export default function ParametresComptePage() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
-  useEffect(() => {
-    const sync = () => {
-      setSession(getSession());
-      setReady(true);
-    };
-    sync();
-    const unsub = subscribeSession(sync);
-    return () => {
-      unsub();
-    };
-  }, []);
 
   return (
     <div className="space-y-5">

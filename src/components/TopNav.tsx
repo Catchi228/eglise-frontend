@@ -5,7 +5,8 @@ import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Church, LogOut, Menu, Settings, UserRound, X } from "lucide-react";
 import { getSiteLogo } from "@/lib/siteLogo";
-import { getSession, signOut, subscribeSession } from "@/lib/session";
+import { signOut } from "@/lib/session";
+import { useSession } from "@/lib/useSession";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { CBT_INSTITUTION } from "@/lib/cbtInstitution";
 
@@ -29,7 +30,7 @@ export function TopNav() {
   );
   const [menuOpen, setMenuOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
-  const [session, setSession] = useState<ReturnType<typeof getSession>>(null);
+  const { session, ready: sessionReady } = useSession();
   const accountWrapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -40,13 +41,6 @@ export function TopNav() {
       window.removeEventListener("eglise:logo", sync);
       window.removeEventListener("storage", sync);
     };
-  }, []);
-
-  useEffect(() => {
-    const syncSession = () => setSession(getSession());
-    syncSession();
-    const unsub = subscribeSession(syncSession);
-    return () => unsub();
   }, []);
 
   useEffect(() => {
@@ -167,7 +161,7 @@ export function TopNav() {
                 role="menu"
                 className="absolute right-0 top-full z-[60] mt-2 w-[min(18rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-[#d9cfc3] bg-[#fffcf8] py-2 shadow-xl dark:border-white/10 dark:bg-slate-950/95 dark:shadow-[0_28px_90px_-24px_rgba(0,0,0,0.75)] dark:backdrop-blur-2xl"
               >
-                {session ? (
+                {sessionReady && session ? (
                   <>
                     <div className="border-b border-[#e8dfd5]/90 px-4 py-3 dark:border-white/10">
                       <p className="font-[family-name:var(--font-inter)] text-xs font-medium uppercase tracking-wider text-[#6b6258] dark:text-white/50">
@@ -212,7 +206,7 @@ export function TopNav() {
                       Déconnexion
                     </button>
                   </>
-                ) : (
+                ) : sessionReady ? (
                   <Link
                     href="/connexion"
                     role="menuitem"
@@ -222,7 +216,7 @@ export function TopNav() {
                     <UserRound className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
                     Se connecter
                   </Link>
-                )}
+                ) : null}
               </div>
             ) : null}
           </div>

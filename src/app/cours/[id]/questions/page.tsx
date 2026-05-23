@@ -6,7 +6,7 @@ import { notFound, useParams } from "next/navigation";
 import { PageBack } from "@/components/PageBack";
 import { readCourses, whenPublicContentReady } from "@/lib/adminData";
 import { isCourseAccessible } from "@/lib/courseAccess";
-import { getSession, subscribeSession } from "@/lib/session";
+import { useSession } from "@/lib/useSession";
 import type { Course, CourseQuestion } from "@/lib/types";
 
 export default function QuestionsPage() {
@@ -18,13 +18,7 @@ export default function QuestionsPage() {
   const [text, setText] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
-  const [session, setSession] = useState(() => getSession());
-
-  useEffect(() => {
-    const sync = () => setSession(getSession());
-    sync();
-    return subscribeSession(sync);
-  }, []);
+  const { session, ready: sessionReady } = useSession();
 
   useEffect(() => {
     if (!id) {
@@ -100,7 +94,7 @@ export default function QuestionsPage() {
 
       <div className="rounded-2xl border border-[#d9cfc3]/70 bg-[#fffcf8]/95 p-6 shadow-sm">
         <h2 className="text-lg font-semibold text-[#2c2822]">Poser une question</h2>
-        {session ? (
+        {sessionReady && session ? (
           <div className="mt-4 space-y-3">
             <textarea
               value={text}
@@ -118,13 +112,15 @@ export default function QuestionsPage() {
               {sending ? "Envoi…" : "Publier"}
             </button>
           </div>
-        ) : (
+        ) : sessionReady ? (
           <p className="mt-4 text-sm text-[#5c544a]">
             <Link className="font-semibold text-[#6b5538]" href={`/connexion?next=/cours/${course.id}/questions`}>
               Connectez-vous
             </Link>{" "}
             pour poser une question.
           </p>
+        ) : (
+          <p className="mt-4 text-sm text-[#5c544a]">Vérification de la session…</p>
         )}
       </div>
 

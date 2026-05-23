@@ -5,6 +5,7 @@ import { CalendarDays, Clock3, FileText } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { readCourses, whenPublicContentReady } from "@/lib/adminData";
 import { compareCoursesForDisplay, isCourseAccessible } from "@/lib/courseAccess";
+import { useSession } from "@/lib/useSession";
 import type { Course } from "@/lib/types";
 
 function parseFRDate(d: string) {
@@ -95,6 +96,7 @@ function CourseCard({ c }: { c: Course }) {
 export default function CoursPage() {
   const [tick, setTick]               = useState(0);
   const [contentReady, setContentReady] = useState(false);
+  const { session, ready: sessionReady } = useSession();
 
   useEffect(() => {
     const cancel = whenPublicContentReady(() => setContentReady(true));
@@ -146,6 +148,15 @@ export default function CoursPage() {
           <span className="font-semibold">QCM / quiz</span> pour s&apos;auto-évaluer.
         </p>
       </div>
+
+      {sessionReady && !session ? (
+        <div className="rounded-2xl border border-amber-200/80 bg-amber-50/90 px-4 py-3 text-sm text-amber-950">
+          <Link href="/connexion?next=/cours" className="font-semibold underline">
+            Connectez-vous
+          </Link>{" "}
+          pour accéder aux cours et télécharger le contenu.
+        </div>
+      ) : null}
 
       <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {/* Cours précédents */}

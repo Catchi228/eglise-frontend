@@ -49,19 +49,21 @@ export async function refreshSession(): Promise<Session | null> {
     const r = await fetch("/api/auth/me", {
       cache: "no-store",
       credentials: "same-origin",
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(8000),
     });
-    if (!r.ok) {
+    if (r.status === 401) {
       _setCachedSession(null);
       return null;
+    }
+    if (!r.ok) {
+      return getSession();
     }
     const data = await r.json();
     const user = data.user as Session | null;
     _setCachedSession(user);
     return user;
   } catch {
-    _setCachedSession(null);
-    return null;
+    return getSession();
   }
 }
 

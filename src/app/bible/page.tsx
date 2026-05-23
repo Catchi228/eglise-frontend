@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { BookOpen, ChevronRight, Heart } from "lucide-react";
 import { bibleBooks } from "@/lib/mock";
+import { useSession } from "@/lib/useSession";
 
 function groupBooks(testament: "Ancien Testament" | "Nouveau Testament") {
   return bibleBooks.filter((b) => b.testament === testament);
@@ -11,6 +12,7 @@ function groupBooks(testament: "Ancien Testament" | "Nouveau Testament") {
 
 export default function BiblePage() {
   const [q, setQ] = useState("");
+  const { session } = useSession();
 
   const filtered = useMemo(() => {
     const query = q.trim().toLowerCase();
@@ -33,15 +35,15 @@ export default function BiblePage() {
             <span className="font-semibold text-[var(--foreground)]">Louis Segond 1910</span>.
           </p>
         </div>
-        <a
+        <Link
           className="inline-flex w-full shrink-0 items-center justify-center rounded-2xl border border-[#cfc4b6]/75 bg-[#ebe4d8]/70 px-4 py-2.5 text-sm font-semibold text-[#2c2822] hover:bg-[#e0d6ca] sm:w-auto"
-          href="/connexion"
+          href={session ? "/mon-espace/favoris" : "/connexion?next=/mon-espace/favoris"}
         >
           <span className="inline-flex items-center gap-2">
             <Heart className="h-4 w-4 text-[#7a6849]" aria-hidden="true" />
             Favoris (0)
           </span>
-        </a>
+        </Link>
       </div>
 
       <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 text-[#2c2822] shadow-sm">
