@@ -1,13 +1,15 @@
 import { getCurrentUser } from "@/lib/auth";
+import { isCourseAccessible } from "@/lib/courseAccess";
 import { fetchAnnouncementsFromDb, fetchCoursesFromDb } from "@/lib/server/siteContent";
 
-/** Données portail : annonces publiques ; cours uniquement si session valide. */
+/** Données portail : annonces publiques ; cours accessibles sans connexion (ex. Ecodim). */
 export async function GET() {
   const user = await getCurrentUser();
   const announcements = (await fetchAnnouncementsFromDb()).filter(
     (a) => a.status === "Publiée",
   );
-  const courses = user ? await fetchCoursesFromDb() : [];
+  const allCourses = await fetchCoursesFromDb();
+  const courses = user ? allCourses : allCourses.filter((c) => isCourseAccessible(c));
 
   return Response.json(
     { announcements, courses },
