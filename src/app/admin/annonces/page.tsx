@@ -252,7 +252,7 @@ export default function AdminAnnoncesPage() {
       </div>
 
       <p className="text-xs text-[#6b6258]">
-        <Link href="/annonces" className="font-semibold text-amber-900 hover:underline">
+        <Link href="/annonces" className="font-semibold text-amber-900 hover:underline dark:text-accent-text">
           Voir le fil public
         </Link>
       </p>

@@ -32,7 +32,7 @@ function RichText({ text }: { text: string }) {
         if (/^\d+\.\s/.test(line)) {
           return (
             <div key={i} className="flex gap-2">
-              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#ebe4d8]/80 text-xs font-bold text-[#7a6849]">
+              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#ebe4d8]/80 text-xs font-bold text-accent-icon">
                 {line.match(/^(\d+)/)?.[1]}
               </span>
               <span>{line.replace(/^\d+\.\s/, "")}</span>
@@ -195,7 +195,7 @@ export default function CoursDetailPage() {
       <div className="space-y-4">
         <PageBack href="/cours" label="Cours" />
         <div className="flex items-center gap-3 rounded-2xl border border-[#d9cfc3]/70 bg-white/70 p-5 text-sm text-[#5c544a]">
-          <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#c8b89a]/60 border-t-[#7a6849]" />
+          <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#c8b89a]/60 border-t-accent-icon" />
           Chargement…
         </div>
       </div>

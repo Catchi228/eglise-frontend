@@ -112,7 +112,7 @@ function QuestionEditor({
       {/* Liste questions */}
       {loading ? (
         <div className="flex items-center gap-2 text-xs text-[#6b6258]">
-          <span className="h-3.5 w-3.5 animate-spin rounded-full border border-[#c8b89a] border-t-[#7a6849]" />
+          <span className="h-3.5 w-3.5 animate-spin rounded-full border border-accent-spinner-track border-t-accent-icon" />
           Chargement des questions…
         </div>
       ) : questions.length === 0 ? (
@@ -434,7 +434,7 @@ export default function AdminQcmPage() {
       {/* Liste QCMs */}
       {pageLoading ? (
         <div className="flex items-center justify-center gap-3 rounded-2xl border border-[#d9cfc3]/70 bg-[#faf7f2]/60 py-12">
-          <span className="h-5 w-5 animate-spin rounded-full border-2 border-[#c8b89a] border-t-[#7a6849]" />
+          <span className="h-5 w-5 animate-spin rounded-full border-2 border-accent-spinner-track border-t-accent-icon" />
           <span className="text-sm text-[#6b6258]">Chargement des QCMs…</span>
         </div>
       ) : qcms.length === 0 ? (

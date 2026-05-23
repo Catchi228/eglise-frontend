@@ -49,7 +49,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           aria-hidden
         />
         <div
-          className="absolute inset-0 bg-[radial-gradient(ellipse_100%_80%_at_50%_-10%,rgba(180,83,9,0.14),transparent_55%)] dark:bg-[radial-gradient(ellipse_100%_80%_at_50%_-10%,rgba(180,83,9,0.18),transparent_55%)]"
+          className="absolute inset-0 bg-[radial-gradient(ellipse_100%_80%_at_50%_-10%,rgba(180,83,9,0.14),transparent_55%)] dark:bg-[radial-gradient(ellipse_100%_80%_at_50%_-10%,rgba(251,191,36,0.24),transparent_55%)]"
           aria-hidden
         />
         <div

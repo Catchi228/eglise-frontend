@@ -190,7 +190,7 @@ export default function ConnexionClient() {
             viewportFull ? "lg:min-h-screen" : "lg:min-h-[calc(100dvh-4.25rem)]",
           )}
         >
-          <p className="font-[family-name:var(--font-serif)] text-xs font-semibold uppercase tracking-[0.22em] text-amber-200/85">
+          <p className="font-[family-name:var(--font-serif)] text-xs font-semibold uppercase tracking-[0.22em] text-amber-200/85 dark:text-accent-text">
             {isAdminLogin ? "Espace réservé" : "Après l’accueil du portail"}
           </p>
           <h2 className="mt-3 max-w-xl font-[family-name:var(--font-serif)] text-2xl font-semibold leading-snug tracking-tight text-white sm:text-3xl md:text-[2.1rem]">
@@ -388,7 +388,7 @@ export default function ConnexionClient() {
                 <a
                   className={cn(
                     "font-medium transition",
-                    isDark ? "hover:text-amber-200" : "hover:text-slate-900",
+                    isDark ? "hover:text-accent-bright" : "hover:text-slate-900",
                   )}
                   href="#"
                 >
@@ -398,7 +398,7 @@ export default function ConnexionClient() {
                   type="button"
                   className={cn(
                     "font-medium transition",
-                    isDark ? "hover:text-amber-200" : "hover:text-slate-900",
+                    isDark ? "hover:text-accent-bright" : "hover:text-slate-900",
                   )}
                   onClick={() => {
                     setError(null);

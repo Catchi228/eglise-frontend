@@ -54,7 +54,7 @@ export default function MesNotesPage() {
             </p>
           </div>
           <span className="inline-flex items-center gap-2 rounded-full border border-[#d9cfc3]/70 bg-[#faf7f2]/95 px-3 py-2 text-xs font-semibold text-[#5c4a36]">
-            <NotebookPen className="h-4 w-4 text-[#7a6849]" aria-hidden="true" />
+            <NotebookPen className="h-4 w-4 text-accent-icon" aria-hidden="true" />
             {notes.length} note(s)
           </span>
         </div>

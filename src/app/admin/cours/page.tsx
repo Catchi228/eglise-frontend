@@ -273,7 +273,7 @@ export default function AdminCoursPage() {
       </div>
 
       <p className="text-xs text-[#6b6258]">
-        <Link href="/cours" className="font-semibold text-amber-900 hover:underline">
+        <Link href="/cours" className="font-semibold text-amber-900 hover:underline dark:text-accent-text">
           Liste publique
         </Link>
       </p>

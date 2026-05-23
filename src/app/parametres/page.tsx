@@ -42,7 +42,7 @@ export default function ParametresComptePage() {
               Identifiant, mot de passe et session.
             </p>
           </div>
-          <span className="grid h-10 w-10 place-items-center rounded-2xl border border-[#cfc4b6]/75 bg-[#ebe4d8]/75 text-[#7a6849]">
+          <span className="grid h-10 w-10 place-items-center rounded-2xl border border-[#cfc4b6]/75 bg-[#ebe4d8]/75 text-accent-icon">
             <Settings className="h-5 w-5" aria-hidden="true" />
           </span>
         </div>
@@ -50,7 +50,7 @@ export default function ParametresComptePage() {
         <div className="mt-5 rounded-2xl border border-[#d9cfc3]/70 bg-[#faf7f2]/95 p-4 shadow-sm dark:border-white/10 dark:bg-slate-900/40">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-start gap-3">
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-[#cfc4b6]/75 bg-[#fffcf8] text-[#7a6849] dark:border-white/10 dark:bg-white/5 dark:text-amber-200">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-[#cfc4b6]/75 bg-[#fffcf8] text-accent-icon dark:border-white/10 dark:bg-white/5">
                 <Palette className="h-4 w-4" aria-hidden="true" />
               </span>
               <div className="text-sm">

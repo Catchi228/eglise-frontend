@@ -33,7 +33,7 @@ export default function FavorisPage() {
               Versets bibliques enregistrés depuis la lecture.
             </p>
           </div>
-          <span className="grid h-10 w-10 place-items-center rounded-2xl border border-[#cfc4b6]/75 bg-[#ebe4d8]/75 text-[#7a6849] dark:border-white/10 dark:bg-white/5 dark:text-amber-200">
+          <span className="grid h-10 w-10 place-items-center rounded-2xl border border-[#cfc4b6]/75 bg-[#ebe4d8]/75 text-accent-icon dark:border-white/10 dark:bg-white/5">
             <BookMarked className="h-5 w-5" aria-hidden="true" />
           </span>
         </div>
@@ -52,7 +52,7 @@ export default function FavorisPage() {
                       {v.bookId && v.chapter > 0 ? (
                         <Link
                           href={`/bible/${v.bookId}/${v.chapter}`}
-                          className="inline-flex items-center gap-1 text-xs font-medium text-amber-800 hover:underline dark:text-amber-200"
+                          className="inline-flex items-center gap-1 text-xs font-medium text-accent-text hover:underline"
                         >
                           Voir le chapitre
                           <ExternalLink className="h-3 w-3" aria-hidden />
@@ -81,7 +81,7 @@ export default function FavorisPage() {
         ) : (
           <div className="mt-5 rounded-2xl border border-[#d9cfc3]/70 bg-[#faf7f2]/95 p-4 text-sm text-[var(--muted)] shadow-sm dark:border-white/10 dark:bg-slate-900/40">
             Aucun verset enregistré. Ouvrez un chapitre dans la{" "}
-            <Link href="/bible" className="font-medium text-amber-800 hover:underline dark:text-amber-200">
+            <Link href="/bible" className="font-medium text-accent-text hover:underline">
               Bible
             </Link>{" "}
             et cliquez sur l’icône favori à côté d’un verset.

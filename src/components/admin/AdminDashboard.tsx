@@ -167,7 +167,7 @@ export function AdminDashboard() {
         <div className={kpi}>
           <div className="flex items-center justify-between gap-2">
             <span className="text-xs font-semibold uppercase tracking-wide text-[#6b6258]">En ligne</span>
-            <Activity className="h-4 w-4 text-amber-800" aria-hidden />
+            <Activity className="h-4 w-4 text-amber-800 dark:text-accent-icon" aria-hidden />
           </div>
           <p className="mt-2 font-[family-name:var(--font-serif)] text-2xl font-semibold tabular-nums text-[#1f1c18]">
             {stats ? stats.counts.total : "—"}
@@ -177,7 +177,7 @@ export function AdminDashboard() {
         <div className={kpi}>
           <div className="flex items-center justify-between gap-2">
             <span className="text-xs font-semibold uppercase tracking-wide text-[#6b6258]">Demandes</span>
-            <Megaphone className="h-4 w-4 text-amber-800" aria-hidden />
+            <Megaphone className="h-4 w-4 text-amber-800 dark:text-accent-icon" aria-hidden />
           </div>
           <p className="mt-2 font-[family-name:var(--font-serif)] text-2xl font-semibold tabular-nums text-[#1f1c18]">
             {requests.length}
@@ -187,7 +187,7 @@ export function AdminDashboard() {
         <div className={kpi}>
           <div className="flex items-center justify-between gap-2">
             <span className="text-xs font-semibold uppercase tracking-wide text-[#6b6258]">Annonces</span>
-            <BarChart3 className="h-4 w-4 text-amber-800" aria-hidden />
+            <BarChart3 className="h-4 w-4 text-amber-800 dark:text-accent-icon" aria-hidden />
           </div>
           <p className="mt-2 font-[family-name:var(--font-serif)] text-2xl font-semibold tabular-nums text-[#1f1c18]">
             {publishedCount}
@@ -197,7 +197,7 @@ export function AdminDashboard() {
         <div className={kpi}>
           <div className="flex items-center justify-between gap-2">
             <span className="text-xs font-semibold uppercase tracking-wide text-[#6b6258]">Cours</span>
-            <BookOpen className="h-4 w-4 text-amber-800" aria-hidden />
+            <BookOpen className="h-4 w-4 text-amber-800 dark:text-accent-icon" aria-hidden />
           </div>
           <p className="mt-2 font-[family-name:var(--font-serif)] text-2xl font-semibold tabular-nums text-[#1f1c18]">
             {coursesLive}
@@ -222,7 +222,7 @@ export function AdminDashboard() {
                 <span className="grid h-9 w-9 place-items-center rounded-lg border border-[#cfc4b6]/70 bg-[#ebe4d8]/70 text-[#5c4a36]">
                   <Icon className="h-4 w-4" aria-hidden />
                 </span>
-                <ArrowUpRight className="h-4 w-4 shrink-0 text-[#a89e92] transition group-hover:text-amber-900" />
+                <ArrowUpRight className="h-4 w-4 shrink-0 text-[#a89e92] transition group-hover:text-amber-900 dark:text-slate-400 dark:group-hover:text-accent-text" />
               </div>
               <span className="mt-3 text-sm font-semibold text-[#2c2822]">{label}</span>
               <span className="mt-1 text-xs text-[#6b6258]">{desc}</span>
@@ -251,7 +251,7 @@ export function AdminDashboard() {
                   {!n.read ? (
                     <button
                       type="button"
-                      className="shrink-0 text-xs font-semibold text-amber-900 underline-offset-2 hover:underline"
+                      className="shrink-0 text-xs font-semibold text-amber-900 underline-offset-2 hover:underline dark:text-accent-text"
                       onClick={() => {
                         void markNotificationRead(n.id).then(() => setTick((t) => t + 1));
                       }}
@@ -266,7 +266,7 @@ export function AdminDashboard() {
           {messages.length ? (
             <p className="mt-4 text-xs text-[#6b6258]">
               {messages.length} message(s) à traiter —{" "}
-              <Link href="/admin/messages" className="font-semibold text-amber-900 hover:underline">
+              <Link href="/admin/messages" className="font-semibold text-amber-900 hover:underline dark:text-accent-text">
                 ouvrir la boîte
               </Link>
             </p>

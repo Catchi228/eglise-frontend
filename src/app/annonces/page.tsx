@@ -263,14 +263,14 @@ export default function AnnoncesPage() {
               <div className="mt-4 flex flex-wrap gap-2 text-xs text-[var(--muted)]">
                 {a.city ? (
                   <span className="inline-flex items-center gap-2 rounded-full border border-[#d9cfc3]/70 bg-white/85 px-3 py-2">
-                    <MapPin className="h-4 w-4 text-[#7a6849]" aria-hidden="true" />
+                    <MapPin className="h-4 w-4 text-accent-icon" aria-hidden="true" />
                     {a.city}
                   </span>
                 ) : null}
                 {a.startAt && a.endAt ? (
                   <span className="inline-flex items-center gap-2 rounded-full border border-[#d9cfc3]/70 bg-white/85 px-3 py-2">
                     <CalendarDays
-                      className="h-4 w-4 text-[#7a6849]"
+                      className="h-4 w-4 text-accent-icon"
                       aria-hidden="true"
                     />
                     {a.startAt} - {a.endAt}
@@ -281,7 +281,7 @@ export default function AnnoncesPage() {
                     className="inline-flex items-center gap-2 rounded-full border border-[#d9cfc3]/70 bg-white/85 px-3 py-2 hover:bg-[#ebe4d8]/75"
                     href={`mailto:${a.contactEmail}`}
                   >
-                    <Mail className="h-4 w-4 text-[#7a6849]" aria-hidden="true" />
+                    <Mail className="h-4 w-4 text-accent-icon" aria-hidden="true" />
                     {a.contactEmail}
                   </a>
                 ) : null}

@@ -78,7 +78,7 @@ export default function QcmPage() {
       <div className="space-y-4">
         <PageBack href="/cours" label="Cours" />
         <div className="flex items-center gap-3 rounded-2xl border border-[#d9cfc3]/70 bg-white/70 p-5 text-sm text-[#5c544a]">
-          <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#c8b89a]/60 border-t-[#7a6849]" />
+          <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#c8b89a]/60 border-t-accent-icon" />
           Chargement…
         </div>
       </div>
@@ -113,7 +113,7 @@ export default function QcmPage() {
       {/* Chargement */}
       {loadingQcm && (
         <div className="flex items-center gap-3 rounded-2xl border border-[#d9cfc3]/70 bg-white/70 px-5 py-4 text-sm text-[#5c544a]">
-          <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#c8b89a]/60 border-t-[#7a6849]" />
+          <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#c8b89a]/60 border-t-accent-icon" />
           Chargement du quiz…
         </div>
       )}
@@ -234,7 +234,7 @@ export default function QcmPage() {
               className="overflow-hidden rounded-2xl border border-[#d9cfc3]/70 bg-white/80 shadow-sm backdrop-blur">
               <div className="border-b border-[#e8dfd5]/60 bg-[#faf7f2]/80 px-5 py-3">
                 <legend className="text-sm font-semibold text-[#1f1c18]">
-                  <span className="mr-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#ebe4d8]/80 text-xs font-bold text-[#7a6849]">
+                  <span className="mr-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#ebe4d8]/80 text-xs font-bold text-accent-icon">
                     {idx + 1}
                   </span>
                   {q.prompt}

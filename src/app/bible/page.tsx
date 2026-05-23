@@ -47,7 +47,7 @@ export default function BiblePage() {
           href={session ? "/mon-espace/favoris" : "/connexion?next=/mon-espace/favoris"}
         >
           <span className="inline-flex items-center gap-2">
-            <Heart className="h-4 w-4 text-[#7a6849]" aria-hidden="true" />
+            <Heart className="h-4 w-4 text-accent-icon" aria-hidden="true" />
             Favoris ({favoritesCount})
           </span>
         </Link>
@@ -76,7 +76,7 @@ export default function BiblePage() {
                     className="flex items-center justify-between rounded-2xl border border-[#cfc4b6]/80 bg-[#faf7f2]/96 px-4 py-3 text-sm font-medium shadow-sm transition hover:border-[#b8aea2]/85 hover:bg-[#ebe4d8]/80"
                   >
                     <span className="flex items-center gap-3">
-                      <span className="grid h-8 w-8 place-items-center rounded-xl border border-[#cfc4b6]/75 bg-[#ebe4d8]/70 text-[#7a6849]">
+                      <span className="grid h-8 w-8 place-items-center rounded-xl border border-[#cfc4b6]/75 bg-[#ebe4d8]/70 text-accent-icon">
                         <BookOpen className="h-4 w-4" aria-hidden="true" />
                       </span>
                       <span className="text-[#2c2822]">{b.name}</span>
@@ -109,7 +109,7 @@ export default function BiblePage() {
                     className="flex items-center justify-between rounded-2xl border border-[#cfc4b6]/80 bg-[#faf7f2]/96 px-4 py-3 text-sm font-medium shadow-sm transition hover:border-[#b8aea2]/85 hover:bg-[#ebe4d8]/80"
                   >
                     <span className="flex items-center gap-3">
-                      <span className="grid h-8 w-8 place-items-center rounded-xl border border-[#cfc4b6]/75 bg-[#ebe4d8]/70 text-[#7a6849]">
+                      <span className="grid h-8 w-8 place-items-center rounded-xl border border-[#cfc4b6]/75 bg-[#ebe4d8]/70 text-accent-icon">
                         <BookOpen className="h-4 w-4" aria-hidden="true" />
                       </span>
                       <span className="text-[#2c2822]">{b.name}</span>

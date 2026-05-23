@@ -30,7 +30,7 @@ export default function PerformancesPage() {
               Résultats QCM enregistrés sur votre compte.
             </p>
           </div>
-          <span className="grid h-10 w-10 place-items-center rounded-2xl border border-[#cfc4b6]/75 bg-[#ebe4d8]/75 text-[#7a6849]">
+          <span className="grid h-10 w-10 place-items-center rounded-2xl border border-[#cfc4b6]/75 bg-[#ebe4d8]/75 text-accent-icon">
             <ChartColumn className="h-5 w-5" aria-hidden="true" />
           </span>
         </div>

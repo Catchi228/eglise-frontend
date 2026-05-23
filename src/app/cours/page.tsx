@@ -47,15 +47,15 @@ function CourseCard({ c }: { c: Course }) {
 
       <div className="mt-4 flex flex-wrap gap-2 text-xs text-[#5c544a]">
         <span className="inline-flex items-center gap-2 rounded-full border border-[#d9cfc3]/70 bg-white/85 px-3 py-2 text-[#5c544a]">
-          <CalendarDays className="h-4 w-4 text-[#7a6849]" aria-hidden="true" />
+          <CalendarDays className="h-4 w-4 text-accent-icon" aria-hidden="true" />
           {c.startAt} - {c.endAt}
         </span>
         <span className="inline-flex items-center gap-2 rounded-full border border-[#d9cfc3]/70 bg-white/85 px-3 py-2 text-[#5c544a]">
-          <Clock3 className="h-4 w-4 text-[#7a6849]" aria-hidden="true" />
+          <Clock3 className="h-4 w-4 text-accent-icon" aria-hidden="true" />
           {c.time}
         </span>
         <span className="inline-flex items-center gap-2 rounded-full border border-[#d9cfc3]/70 bg-white/85 px-3 py-2 text-[#5c544a]">
-          <FileText className="h-4 w-4 shrink-0 text-[#7a6849]" aria-hidden="true" />
+          <FileText className="h-4 w-4 shrink-0 text-accent-icon" aria-hidden="true" />
           {(c.pdfFiles?.length ?? 0) > 0
             ? `${c.pdfFiles?.length} PDF`
             : `${c.sections.length} fichier${c.sections.length > 1 ? "s" : ""}`}

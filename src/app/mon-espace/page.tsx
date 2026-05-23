@@ -52,14 +52,14 @@ export default function MonEspacePage() {
         </div>
       ) : null}
 
-      <header className="rounded-[2rem] border border-[#e0d6ca]/75 bg-[#fffcf8]/95 p-5 shadow-[0_32px_90px_-44px_rgba(0,0,0,0.55)] backdrop-blur-xl sm:p-8 md:p-10">
-        <p className="font-[family-name:var(--font-inter)] text-xs font-semibold uppercase tracking-[0.2em] text-amber-800/80">
+      <header className="rounded-[2rem] border border-[#e0d6ca]/75 bg-[#fffcf8]/95 p-5 shadow-[0_32px_90px_-44px_rgba(0,0,0,0.55)] backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/40 sm:p-8 md:p-10">
+        <p className="font-[family-name:var(--font-inter)] text-xs font-semibold uppercase tracking-[0.2em] text-amber-800/80 dark:text-accent-text">
           Espace personnel
         </p>
-        <h1 className="page-title mt-2 font-[family-name:var(--font-serif)] font-semibold tracking-tight text-[#2c2822]">
+        <h1 className="page-title mt-2 font-[family-name:var(--font-serif)] font-semibold tracking-tight text-[#2c2822] dark:text-slate-100">
           Tableau de bord
         </h1>
-        <p className="mt-3 max-w-2xl font-[family-name:var(--font-inter)] text-sm leading-relaxed text-[#5c544a] sm:text-base">
+        <p className="mt-3 max-w-2xl font-[family-name:var(--font-inter)] text-sm leading-relaxed text-[#5c544a] dark:text-slate-300 sm:text-base">
           {session
             ? `Ravi de vous revoir. Connecté : ${session.email}`
             : "Vous n’êtes pas connecté — certaines actions restent disponibles en local."}
@@ -71,23 +71,23 @@ export default function MonEspacePage() {
           <Link
             key={label}
             href={href}
-            className="group flex flex-col rounded-[1.75rem] border border-[#d4c9bc]/55 bg-[#faf7f2]/96 p-7 shadow-[0_20px_56px_-36px_rgba(15,23,42,0.25)] backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-amber-300/50 hover:shadow-[0_28px_70px_-32px_rgba(15,23,42,0.3)]"
+            className="group flex flex-col rounded-[1.75rem] border border-[#d4c9bc]/55 bg-[#faf7f2]/96 p-7 shadow-[0_20px_56px_-36px_rgba(15,23,42,0.25)] backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-amber-300/50 hover:shadow-[0_28px_70px_-32px_rgba(15,23,42,0.3)] dark:border-white/10 dark:bg-slate-900/40 dark:hover:border-accent-soft-border"
           >
             <div className="flex items-start justify-between gap-3">
-              <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#ebe4d8]/90 text-[#2c2822] ring-1 ring-[#cfc4b6]/80 transition group-hover:bg-amber-500/15 group-hover:text-amber-950 group-hover:ring-amber-400/30">
+              <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#ebe4d8]/90 text-[#2c2822] ring-1 ring-[#cfc4b6]/80 transition group-hover:bg-amber-500/15 group-hover:text-amber-950 group-hover:ring-amber-400/30 dark:bg-white/5 dark:text-slate-100 dark:ring-white/10 dark:group-hover:bg-accent-soft dark:group-hover:text-accent-text-strong dark:group-hover:ring-accent/40">
                 <Icon className="h-5 w-5" aria-hidden="true" />
               </div>
               <span className="rounded-full bg-[#ebe4d8]/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-[#6b6258] transition group-hover:bg-amber-100/80 group-hover:text-amber-900">
                 Accès
               </span>
             </div>
-            <div className="mt-5 font-[family-name:var(--font-serif)] text-xl font-semibold tracking-tight text-[#2c2822]">
+            <div className="mt-5 font-[family-name:var(--font-serif)] text-xl font-semibold tracking-tight text-[#2c2822] dark:text-slate-100">
               {label}
             </div>
             <p className="mt-2 flex-1 font-[family-name:var(--font-inter)] text-sm leading-relaxed text-[#5c544a]">
               {desc}
             </p>
-            <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#3d3830] transition group-hover:text-amber-950">
+            <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#3d3830] transition group-hover:text-amber-950 dark:text-slate-200 dark:group-hover:text-accent-text">
               Ouvrir
               <span
                 className="inline-block transition group-hover:translate-x-0.5"

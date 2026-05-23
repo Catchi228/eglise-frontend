@@ -44,8 +44,8 @@ export function ThemeToggle({ className, variant = "panel" }: Props) {
           "flex h-9 w-9 items-center justify-center rounded-full transition",
           dark
             ? nav
-              ? "bg-slate-900/90 text-amber-200"
-              : "bg-slate-800 text-amber-200"
+              ? "bg-slate-900/90 text-accent-bright"
+              : "bg-slate-800 text-accent-bright"
             : nav
               ? "text-white/70 hover:bg-white/10"
               : "text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800/80",
@@ -63,10 +63,10 @@ export function ThemeToggle({ className, variant = "panel" }: Props) {
           !dark
             ? nav
               ? "bg-[#faf7f2] text-amber-900 shadow-sm ring-1 ring-[#e8dfd5]/90"
-              : "bg-[#faf7f2] text-amber-800 shadow-sm ring-1 ring-[#e8dfd5]/80 dark:bg-[#faf7f2] dark:text-amber-800"
+              : "bg-[#faf7f2] text-amber-800 shadow-sm ring-1 ring-[#e8dfd5]/80"
             : nav
               ? "text-white/70 hover:bg-white/10"
-              : "text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800/80",
+              : "text-slate-400 hover:bg-slate-800/80 hover:text-accent-text",
         )}
       >
         <Sun className="h-4 w-4" aria-hidden />

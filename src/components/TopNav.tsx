@@ -137,7 +137,7 @@ export function TopNav() {
               className={cn(
                 "flex h-10 w-10 items-center justify-center rounded-full border transition",
                 monEspaceActive && session
-                  ? "border-amber-500/50 bg-amber-100 text-amber-950 shadow-[0_0_0_1px_rgba(245,158,11,0.35)] dark:border-amber-400/50 dark:bg-amber-500/25 dark:text-white dark:shadow-[0_0_0_1px_rgba(251,191,36,0.25)]"
+                  ? "border-accent/50 bg-accent-soft text-accent-text-strong shadow-[0_0_0_1px_rgba(251,191,36,0.35)] dark:border-accent/55 dark:bg-accent-soft dark:text-accent-text-strong"
                   : "border-[#cfc4b6]/90 bg-[#fffcf8] text-[#2c2822] hover:border-[#b8aea2] hover:bg-[#ebe4d8]/95 dark:border-white/20 dark:bg-white/10 dark:text-white dark:hover:border-white/35 dark:hover:bg-white/15",
               )}
               onClick={() => setAccountOpen((o) => !o)}

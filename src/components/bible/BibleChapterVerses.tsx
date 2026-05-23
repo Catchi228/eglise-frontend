@@ -55,8 +55,8 @@ export function BibleChapterVerses({ bookId, bookName, chapter, verses }: Props)
                 className={cn(
                   "mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition",
                   favorited
-                    ? "border-amber-300/80 bg-amber-50 text-amber-700 shadow-sm dark:border-amber-400/40 dark:bg-amber-500/15 dark:text-amber-200"
-                    : "border-[#d9cfc3]/70 bg-[#fffcf8] text-[var(--muted)] opacity-70 hover:border-amber-300/60 hover:bg-amber-50/80 hover:text-amber-700 group-hover:opacity-100 dark:border-white/10 dark:bg-white/5 dark:hover:bg-amber-500/10 dark:hover:text-amber-200",
+                    ? "border-accent-soft-border bg-accent-soft text-accent-bright shadow-sm"
+                    : "border-[#d9cfc3]/70 bg-[#fffcf8] text-[var(--muted)] opacity-70 hover:border-accent-soft-border hover:bg-accent-soft hover:text-accent-text group-hover:opacity-100 dark:border-white/10 dark:bg-white/5 dark:hover:bg-accent-soft dark:hover:text-accent-bright",
                 )}
                 onClick={() =>
                   toggleBibleFavorite({
