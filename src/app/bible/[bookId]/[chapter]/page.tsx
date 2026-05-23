@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { PageBack } from "@/components/PageBack";
+import { BibleChapterVerses } from "@/components/bible/BibleChapterVerses";
 import { bibleBooks } from "@/lib/mock";
 import { loadBibleChapter, bibleChapterFileExists } from "@/lib/bibleChapter";
 import { fetchRemoteBibleChapter } from "@/lib/bibleRemote";
@@ -81,24 +82,12 @@ export default async function BibleChapterPage({ params }: Props) {
           </p>
         </div>
       ) : (
-        <article className="rounded-3xl border border-[#d9cfc3]/70 bg-[#fffcf8]/92 p-6 text-[#2c2822] shadow-sm backdrop-blur">
-          <div className="divide-y divide-[#e0d6ca]/70">
-            {data.verses
-              .slice()
-              .sort((a, b) => a.n - b.n)
-              .map((v) => (
-                <p
-                  key={v.n}
-                  className="py-3 text-[15px] leading-relaxed text-[var(--foreground)]"
-                >
-                  <sup className="mr-2 inline-flex min-w-7 items-center justify-center rounded-full border border-[#cfc4b6]/80 bg-[#ebe4d8]/70 px-2 py-0.5 text-xs font-semibold text-[#2c2822]">
-                    {v.n}
-                  </sup>
-                  <span className="text-[#1f1c18]">{v.t}</span>
-                </p>
-              ))}
-          </div>
-        </article>
+        <BibleChapterVerses
+          bookId={bookId}
+          bookName={data.bookName}
+          chapter={chapterNum}
+          verses={data.verses}
+        />
       )}
     </div>
   );

@@ -7,7 +7,6 @@ import { Church, LogOut, Menu, Settings, UserRound, X } from "lucide-react";
 import { getSiteLogo } from "@/lib/siteLogo";
 import { signOut } from "@/lib/session";
 import { useSession } from "@/lib/useSession";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { CBT_INSTITUTION } from "@/lib/cbtInstitution";
 
 type NavItem = { href: string; label: string };
@@ -129,8 +128,6 @@ export function TopNav() {
         </nav>
 
         <div className="flex shrink-0 items-center gap-2">
-          <ThemeToggle variant="nav" className="flex" />
-
           <div ref={accountWrapRef} className="relative">
             <button
               type="button"

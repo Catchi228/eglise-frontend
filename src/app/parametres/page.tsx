@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import { PageBack } from "@/components/PageBack";
-import { LogIn, LogOut, Settings } from "lucide-react";
+import { LogIn, LogOut, Palette, Settings } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   changeEmail,
   changePassword,
@@ -44,6 +45,23 @@ export default function ParametresComptePage() {
           <span className="grid h-10 w-10 place-items-center rounded-2xl border border-[#cfc4b6]/75 bg-[#ebe4d8]/75 text-[#7a6849]">
             <Settings className="h-5 w-5" aria-hidden="true" />
           </span>
+        </div>
+
+        <div className="mt-5 rounded-2xl border border-[#d9cfc3]/70 bg-[#faf7f2]/95 p-4 shadow-sm dark:border-white/10 dark:bg-slate-900/40">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-start gap-3">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-[#cfc4b6]/75 bg-[#fffcf8] text-[#7a6849] dark:border-white/10 dark:bg-white/5 dark:text-amber-200">
+                <Palette className="h-4 w-4" aria-hidden="true" />
+              </span>
+              <div className="text-sm">
+                <div className="font-semibold">Apparence</div>
+                <p className="mt-1 text-[var(--muted)]">
+                  Choisissez le mode clair ou sombre pour le portail.
+                </p>
+              </div>
+            </div>
+            <ThemeToggle variant="panel" />
+          </div>
         </div>
 
         <div className="mt-5 rounded-2xl border border-[#d9cfc3]/70 bg-[#faf7f2]/95 p-4 shadow-sm">

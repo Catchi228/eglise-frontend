@@ -1,60 +1,39 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { BookMarked, Trash2 } from "lucide-react";
+import Link from "next/link";
+import { useSyncExternalStore } from "react";
+import { BookMarked, ExternalLink, Trash2 } from "lucide-react";
 import { PageBack } from "@/components/PageBack";
-
-type FavoriteVerse = {
-  id: string;
-  ref: string; // ex: "Jean 3:16"
-  text: string;
-  createdAt: string;
-};
-
-const FAVORITES_KEY = "eglise.bible.favoris.v1";
-
-function safeParse<T>(raw: string | null): T | null {
-  if (!raw) return null;
-  try {
-    return JSON.parse(raw) as T;
-  } catch {
-    return null;
-  }
-}
-
-function readFavoritesFromStorage(): FavoriteVerse[] {
-  if (typeof window === "undefined") return [];
-  const parsed = safeParse<FavoriteVerse[]>(
-    window.localStorage.getItem(FAVORITES_KEY),
-  );
-  return Array.isArray(parsed) ? parsed : [];
-}
+import {
+  getFavoritesSnapshot,
+  removeBibleFavorite,
+  subscribeFavorites,
+  type FavoriteVerse,
+} from "@/lib/bibleFavorites";
 
 export default function FavorisPage() {
-  const [items, setItems] = useState<FavoriteVerse[]>(readFavoritesFromStorage);
+  const items = useSyncExternalStore(
+    subscribeFavorites,
+    getFavoritesSnapshot,
+    () => [] as FavoriteVerse[],
+  );
 
-  useEffect(() => {
-    window.localStorage.setItem(FAVORITES_KEY, JSON.stringify(items));
-  }, [items]);
-
-  const sorted = useMemo(() => {
-    return items
-      .slice()
-      .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
-  }, [items]);
+  const sorted = items
+    .slice()
+    .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
 
   return (
     <div className="space-y-5">
-      <div className="rounded-3xl border border-[#d9cfc3]/70 bg-[#fffcf8]/92 p-6 text-[#2c2822] shadow-sm backdrop-blur">
+      <div className="rounded-3xl border border-[#d9cfc3]/70 bg-[#fffcf8]/92 p-6 text-[#2c2822] shadow-sm backdrop-blur dark:border-white/10 dark:bg-slate-950/40">
         <PageBack href="/mon-espace" label="Mon espace" />
         <div className="mt-4 flex items-start justify-between gap-4">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">Favoris</h1>
             <p className="mt-1 text-sm text-[var(--muted)]">
-              Versets bibliques enregistrés.
+              Versets bibliques enregistrés depuis la lecture.
             </p>
           </div>
-          <span className="grid h-10 w-10 place-items-center rounded-2xl border border-[#cfc4b6]/75 bg-[#ebe4d8]/75 text-[#7a6849]">
+          <span className="grid h-10 w-10 place-items-center rounded-2xl border border-[#cfc4b6]/75 bg-[#ebe4d8]/75 text-[#7a6849] dark:border-white/10 dark:bg-white/5 dark:text-amber-200">
             <BookMarked className="h-5 w-5" aria-hidden="true" />
           </span>
         </div>
@@ -64,22 +43,31 @@ export default function FavorisPage() {
             {sorted.map((v) => (
               <article
                 key={v.id}
-                className="rounded-2xl border border-[#d9cfc3]/70 bg-[#faf7f2]/95 p-4 shadow-sm"
+                className="rounded-2xl border border-[#d9cfc3]/70 bg-[#faf7f2]/95 p-4 shadow-sm dark:border-white/10 dark:bg-slate-900/40"
               >
                 <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <div className="text-sm font-semibold">{v.ref}</div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <div className="text-sm font-semibold">{v.ref}</div>
+                      {v.bookId && v.chapter > 0 ? (
+                        <Link
+                          href={`/bible/${v.bookId}/${v.chapter}`}
+                          className="inline-flex items-center gap-1 text-xs font-medium text-amber-800 hover:underline dark:text-amber-200"
+                        >
+                          Voir le chapitre
+                          <ExternalLink className="h-3 w-3" aria-hidden />
+                        </Link>
+                      ) : null}
+                    </div>
                     <p className="mt-2 whitespace-pre-wrap text-sm text-[var(--foreground)]">
                       {v.text}
                     </p>
                   </div>
                   <button
                     type="button"
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#d9cfc3]/70 bg-[#fffcf8] text-[var(--muted)] hover:bg-[#ebe4d8]/85 hover:text-[#2c2822]"
+                    className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#d9cfc3]/70 bg-[#fffcf8] text-[var(--muted)] hover:bg-[#ebe4d8]/85 hover:text-[#2c2822] dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
                     title="Supprimer"
-                    onClick={() =>
-                      setItems((prev) => prev.filter((x) => x.id !== v.id))
-                    }
+                    onClick={() => removeBibleFavorite(v.id)}
                   >
                     <Trash2 className="h-4 w-4" aria-hidden="true" />
                   </button>
@@ -91,12 +79,15 @@ export default function FavorisPage() {
             ))}
           </div>
         ) : (
-          <div className="mt-5 rounded-2xl border border-[#d9cfc3]/70 bg-[#faf7f2]/95 p-4 text-sm text-[var(--muted)] shadow-sm">
-            Aucun verset enregistré pour le moment.
+          <div className="mt-5 rounded-2xl border border-[#d9cfc3]/70 bg-[#faf7f2]/95 p-4 text-sm text-[var(--muted)] shadow-sm dark:border-white/10 dark:bg-slate-900/40">
+            Aucun verset enregistré. Ouvrez un chapitre dans la{" "}
+            <Link href="/bible" className="font-medium text-amber-800 hover:underline dark:text-amber-200">
+              Bible
+            </Link>{" "}
+            et cliquez sur l’icône favori à côté d’un verset.
           </div>
         )}
       </div>
     </div>
   );
 }
-

@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import { BookOpen, ChevronRight, Heart } from "lucide-react";
 import { bibleBooks } from "@/lib/mock";
+import { getFavoritesSnapshot, subscribeFavorites } from "@/lib/bibleFavorites";
 import { useSession } from "@/lib/useSession";
 
 function groupBooks(testament: "Ancien Testament" | "Nouveau Testament") {
@@ -13,6 +14,11 @@ function groupBooks(testament: "Ancien Testament" | "Nouveau Testament") {
 export default function BiblePage() {
   const [q, setQ] = useState("");
   const { session } = useSession();
+  const favoritesCount = useSyncExternalStore(
+    subscribeFavorites,
+    () => getFavoritesSnapshot().length,
+    () => 0,
+  );
 
   const filtered = useMemo(() => {
     const query = q.trim().toLowerCase();
@@ -33,6 +39,7 @@ export default function BiblePage() {
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[var(--muted)]">
             Parcourez les <span className="font-semibold text-[var(--foreground)]">66 livres</span> de la Bible en{" "}
             <span className="font-semibold text-[var(--foreground)]">Louis Segond 1910</span>.
+            Cliquez sur l’icône à côté d’un verset pour l’ajouter à vos favoris.
           </p>
         </div>
         <Link
@@ -41,7 +48,7 @@ export default function BiblePage() {
         >
           <span className="inline-flex items-center gap-2">
             <Heart className="h-4 w-4 text-[#7a6849]" aria-hidden="true" />
-            Favoris (0)
+            Favoris ({favoritesCount})
           </span>
         </Link>
       </div>
