@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { CBT_INSTITUTION } from "@/lib/cbtInstitution";
+import { getSession, subscribeSession } from "@/lib/session";
 
 const HERO_SLIDES = [
   {
@@ -46,6 +47,16 @@ function useInViewOnce(className: string) {
 
 export function HomeInstitutional() {
   const [slide, setSlide] = useState(0);
+  const [session, setSession] = useState(() =>
+    typeof window === "undefined" ? null : getSession(),
+  );
+
+  useEffect(() => {
+    const sync = () => setSession(getSession());
+    sync();
+    return subscribeSession(sync);
+  }, []);
+
   useEffect(() => {
     const t = window.setInterval(() => {
       setSlide((s) => (s + 1) % HERO_SLIDES.length);
