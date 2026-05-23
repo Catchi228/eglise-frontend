@@ -9,6 +9,7 @@ import {
   CalendarDays,
   Mail,
   MapPin,
+  Search,
   X,
 } from "lucide-react";
 import { readAnnouncements, whenPublicContentReady } from "@/lib/adminData";
@@ -169,43 +170,41 @@ export default function AnnoncesPage() {
           </Link>
         </div>
 
-        <div className="rounded-3xl border border-[#d9cfc3]/70 bg-white/70 p-4 text-[#2c2822] shadow-sm backdrop-blur">
-          <div className="flex flex-col gap-3 md:flex-row md:items-center">
-            <div className="relative min-w-0 flex-1">
-              <input
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-                className="w-full rounded-2xl border border-[var(--border)] bg-white/90 px-4 py-3 text-sm text-[#2c2822] outline-none placeholder:text-[#8a8177] focus:ring-2 focus:ring-amber-300/40"
-                placeholder="Rechercher une annonce (titre, ville, contenu)…"
-              />
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {(["Toutes", "Événement", "Recherche", "Autre"] as Category[]).map(
-                (chip) => (
-                  <button
-                    key={chip}
-                    type="button"
-                    onClick={() => setCategory(chip)}
-                    className={
-                      chip === category
-                        ? "rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm"
-                        : "rounded-full border border-[var(--border)] bg-white/80 px-4 py-2 text-sm font-semibold text-[#2c2822] hover:bg-[#ebe4d8]/75"
-                    }
-                  >
-                    {chip}
-                  </button>
-                ),
-              )}
-            </div>
+        <div className="space-y-2.5">
+          <div className="relative">
+            <Search
+              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a8177]"
+              aria-hidden="true"
+            />
+            <input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              type="search"
+              className="h-9 w-full rounded-lg border border-[#d9cfc3]/80 bg-white/95 pl-9 pr-3 text-sm text-[#2c2822] outline-none placeholder:text-[#8a8177] focus:border-[#b8aea2] focus:ring-1 focus:ring-amber-300/50 dark:border-white/15 dark:bg-white/5 dark:text-white dark:placeholder:text-white/40"
+              placeholder="Rechercher…"
+            />
           </div>
 
-          <div className="mt-3 flex flex-wrap items-center justify-end gap-2 text-sm text-[#5c544a]">
-            <div>
-              <span className="font-semibold text-[#2c2822]">
-                {filtered.length}
-              </span>{" "}
-              résultat(s)
-            </div>
+          <div className="flex flex-wrap items-center gap-1.5">
+            {(["Toutes", "Événement", "Recherche", "Autre"] as Category[]).map(
+              (chip) => (
+                <button
+                  key={chip}
+                  type="button"
+                  onClick={() => setCategory(chip)}
+                  className={
+                    chip === category
+                      ? "rounded-md bg-slate-900 px-2.5 py-1 text-xs font-medium text-white dark:bg-white dark:text-slate-900"
+                      : "rounded-md border border-[#d9cfc3]/80 bg-white/80 px-2.5 py-1 text-xs font-medium text-[#5c544a] transition hover:border-[#b8aea2] hover:bg-[#ebe4d8]/60 dark:border-white/15 dark:bg-white/5 dark:text-white/80 dark:hover:bg-white/10"
+                  }
+                >
+                  {chip}
+                </button>
+              ),
+            )}
+            <span className="ml-auto text-xs text-[#8a8177] dark:text-white/50">
+              {filtered.length} résultat{filtered.length !== 1 ? "s" : ""}
+            </span>
           </div>
         </div>
 
