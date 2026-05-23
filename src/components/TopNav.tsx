@@ -249,9 +249,6 @@ export function TopNav() {
           className="flex flex-col gap-1 px-4 py-4"
           aria-label="Navigation mobile"
         >
-          <div className="mb-2 flex justify-center sm:hidden">
-            <ThemeToggle variant="nav" />
-          </div>
           {navItems.map((item) => {
             const active = item.href === activeHref;
             return (
