@@ -158,6 +158,7 @@ export default function CoursPage() {
         </div>
       ) : null}
 
+      {session ? (
       <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {/* Cours précédents */}
         <div className="rounded-3xl border border-[#d9cfc3]/70 bg-white/60 p-4 text-[#2c2822] shadow-sm backdrop-blur">
@@ -210,6 +211,7 @@ export default function CoursPage() {
           )}
         </div>
       </section>
+      ) : null}
     </div>
   );
 }
